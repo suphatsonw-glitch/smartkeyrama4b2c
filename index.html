@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="only light">
+<meta name="theme-color" content="#0d2e1a">
+<title>คีย์ยอดพระราม 4 · Delish Foods</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root { color-scheme: only light; }
+[hidden] { display: none !important; }
+button { color: #1a2a1a; }
+:root { --deep: #0d2e1a; --g: #1a4a2e; --gb: #2d8a52; --gl: #e8f5ee; --line: #d6e4da; --muted: #5f7f5f; --text: #1a2a1a; --bad: #c0392b; --grab: #00a24a; --lm: #0b7a3e; }
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; height: 100%; }
+body { font-family: 'Sarabun', 'Noto Sans Thai', system-ui, sans-serif; font-size: 16px; line-height: 1.45; color: var(--text); background: #eef3ef; }
+button, input, select, textarea { font: inherit; }
+.app { display: flex; flex-direction: column; height: 100vh; height: 100dvh; max-width: 980px; margin: 0 auto; background: #f4f7f5; }
+.topbar { flex: none; display: flex; align-items: center; gap: 10px; padding: calc(10px + env(safe-area-inset-top, 0px)) 12px 10px; background: linear-gradient(135deg, #0d2e1a, #1a4a2e); color: #fff; }
+.tb-home { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.25); color: #fff; text-decoration: none; font-size: 19px; }
+.tb-logo { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; background: rgba(255,255,255,.15); font-size: 22px; }
+.tb-txt { flex: 1; min-width: 0; } .tb-txt b { display: block; font-size: 17px; } .tb-txt small { color: rgba(255,255,255,.78); font-size: 12.5px; }
+.tb-day { font-size: 13px; font-weight: 800; background: rgba(255,255,255,.16); border: 1px solid rgba(255,255,255,.25); border-radius: 99px; padding: 4px 12px; white-space: nowrap; }
+.tabs { flex: none; display: flex; background: #fff; border-bottom: 2px solid var(--line); }
+.tab { flex: 1; min-height: 48px; border: 0; background: none; font-weight: 800; font-size: 14.5px; color: var(--muted); border-bottom: 3px solid transparent; margin-bottom: -2px; cursor: pointer; }
+.tab.on { color: var(--gb); border-bottom-color: var(--gb); background: linear-gradient(180deg, #fff 30%, var(--gl)); }
+.view { flex: 1; overflow-y: auto; padding: 14px 14px 24px; }
+.dock { flex: none; display: flex; gap: 8px; padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px)); background: #fff; border-top: 1px solid var(--line); }
+@media (pointer: coarse) { .dock { padding-bottom: calc(10px + 1in + env(safe-area-inset-bottom, 0px)); } }
+.card { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 14px; margin-bottom: 12px; }
+.card h2 { margin: 0 0 10px; font-size: 17px; color: var(--g); }
+.btn { min-height: 46px; border-radius: 12px; border: 1.5px solid #cfe0d4; background: #fff; color: var(--g); font-weight: 800; padding: 0 14px; cursor: pointer; }
+.btn:disabled { opacity: .45; cursor: default; } .btn.pri { background: linear-gradient(135deg, #2d8a52, #1a6b3c); color: #fff; border: 0; } .btn.grow { flex: 1; } .btn.block { width: 100%; }
+.btn.sm { min-height: 38px; font-size: 14px; padding: 0 12px; }
+.dock .btn { white-space: nowrap; padding: 0 8px; }
+@media (max-width: 480px) { .dock .btn { font-size: 14px; padding: 0 4px; } .tb-txt small { display: none; } .dock { gap: 6px; } }
+.note { font-size: 13.5px; color: var(--muted); }
+.warn { background: #fff6e0; border: 1px solid #f0d58a; color: #6b4e00; border-radius: 12px; padding: 10px 12px; font-size: 14px; margin-bottom: 12px; }
+.emp { text-align: center; color: var(--muted); padding: 28px 12px; border: 2px dashed var(--line); border-radius: 14px; background: #fff; }
+/* นำเข้า */
+.drop { display: block; text-align: center; border: 2.5px dashed #9fd0b3; border-radius: 18px; padding: 26px 14px; background: linear-gradient(180deg, #fff, #f1f9f4); cursor: pointer; transition: .15s; }
+.drop.over { border-color: var(--gb); background: var(--gl); }
+.drop .ic { font-size: 40px; line-height: 1; } .drop b { display: block; font-size: 18px; color: var(--g); margin: 8px 0 2px; }
+.drop input { display: none; }
+.paste { width: 100%; min-height: 90px; border: 1.5px solid #cfe0d4; border-radius: 12px; padding: 10px; font-size: 13px; resize: vertical; }
+/* สรุปตัวเลข */
+.kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 12px; }
+.kpi { border-radius: 16px; padding: 12px 14px; color: #fff; position: relative; overflow: hidden; }
+.kpi.all { background: linear-gradient(135deg, #14432b, #1a6b3c); } .kpi.grab { background: linear-gradient(135deg, #00a24a, #00813b); } .kpi.lm { background: linear-gradient(135deg, #0b7a3e, #075a2d); }
+.kpi small { display: block; font-size: 13px; font-weight: 700; opacity: .9; } .kpi b { display: block; font-size: 30px; line-height: 1.1; } .kpi span { font-size: 13px; opacity: .92; }
+.kpi .lg { position: absolute; right: 10px; top: 10px; font-size: 12px; font-weight: 800; background: rgba(255,255,255,.2); border-radius: 99px; padding: 1px 8px; }
+@media (max-width: 560px) { .kpis { grid-template-columns: 1fr 1fr; } .kpi.all { grid-column: 1 / -1; } .kpi b { font-size: 26px; } }
+.hist { display: flex; gap: 8px; flex-wrap: wrap; }
+.hist button { border: 1.5px solid #cfe0d4; background: #fff; border-radius: 12px; padding: 8px 12px; cursor: pointer; text-align: left; }
+.hist button.on { border-color: var(--gb); background: var(--gl); } .hist button b { display: block; color: var(--g); } .hist button small { color: var(--muted); }
+/* ตัวกรอง */
+.seg { display: flex; background: #e6efe9; border-radius: 14px; padding: 4px; gap: 4px; margin-bottom: 12px; }
+.seg button { flex: 1; min-height: 42px; border: 0; border-radius: 11px; background: transparent; font-weight: 800; color: var(--muted); cursor: pointer; }
+.seg button.on { background: #fff; color: var(--g); box-shadow: 0 1px 4px rgba(0,0,0,.1); }
+.seg button .c { display: inline-block; min-width: 22px; font-size: 12px; background: var(--gl); color: var(--g); border-radius: 99px; padding: 0 6px; margin-left: 4px; }
+.search { width: 100%; min-height: 46px; border: 1.5px solid #cfe0d4; border-radius: 12px; padding: 8px 12px; margin-bottom: 12px; background: #fff; }
+.search:focus { outline: none; border-color: var(--gb); box-shadow: 0 0 0 3px rgba(45,138,82,.15); }
+/* ออเดอร์ */
+.od { background: #fff; border: 1px solid var(--line); border-radius: 16px; margin-bottom: 10px; overflow: hidden; }
+.od-h { display: flex; gap: 10px; align-items: center; padding: 10px 12px; background: #f7fbf8; border-bottom: 1px solid #e6efe9; }
+.dv { flex: none; font-size: 12.5px; font-weight: 800; color: #fff; border-radius: 99px; padding: 3px 10px; }
+.dv.grab { background: var(--grab); } .dv.lm { background: var(--lm); } .dv.oth { background: #7a8a80; }
+.od-h .cu { flex: 1; min-width: 0; } .od-h .cu b { display: block; font-size: 16px; } .od-h .cu small { color: var(--muted); font-size: 12.5px; }
+.od-h .tt { text-align: right; font-weight: 800; color: var(--g); white-space: nowrap; } .od-h .tt small { display: block; font-weight: 600; color: var(--muted); font-size: 12px; }
+.od-i { display: flex; gap: 10px; padding: 8px 12px; border-bottom: 1px solid #f0f4f1; font-size: 14.5px; }
+.od-i:last-child { border-bottom: 0; } .od-i .nm { flex: 1; min-width: 0; } .od-i .nm small { display: block; color: var(--muted); font-size: 12px; }
+.od-i .q { flex: none; font-weight: 800; color: var(--g); min-width: 34px; text-align: right; }
+/* รวมยอด */
+table.sum { width: 100%; border-collapse: collapse; background: #fff; border-radius: 14px; overflow: hidden; font-size: 14.5px; }
+table.sum th { background: var(--g); color: #fff; padding: 9px 8px; text-align: left; font-size: 13px; position: sticky; top: -14px; z-index: 1; }
+table.sum td { padding: 8px; border-bottom: 1px solid #edf2ee; vertical-align: top; }
+table.sum tr:nth-child(even) td { background: #f8fbf9; }
+table.sum .n { text-align: right; white-space: nowrap; } table.sum .code { white-space: nowrap; font-weight: 700; color: var(--g); }
+table.sum td small { display: block; color: var(--muted); font-size: 12px; }
+table.sum tfoot td { background: var(--gl); font-weight: 800; color: var(--g); }
+.qbig { font-size: 18px; font-weight: 800; color: var(--g); }
+.wtag { display: inline-block; font-size: 11.5px; font-weight: 800; background: #fff4cc; color: #7a5600; border-radius: 99px; padding: 0 7px; }
+.sum-wrap { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; margin-bottom: 12px; }
+.sec-h { display: flex; align-items: center; gap: 8px; margin: 4px 0 8px; } .sec-h h3 { margin: 0; font-size: 17px; color: var(--g); flex: 1; }
+/* modal */
+.mo { position: fixed; inset: 0; background: rgba(10,30,18,.5); z-index: 50; display: flex; align-items: flex-end; justify-content: center; }
+.ms { background: #fff; width: 100%; max-width: 640px; max-height: 92vh; overflow-y: auto; border-radius: 20px 20px 0 0; padding: 16px 16px calc(18px + env(safe-area-inset-bottom, 0px)); }
+@media (min-width: 700px) { .mo { align-items: center; } .ms { border-radius: 20px; } }
+.m-title { font-size: 18px; font-weight: 800; color: var(--g); margin-bottom: 8px; }
+.m-actions { display: flex; gap: 8px; margin-top: 12px; } .m-actions .btn { flex: 1; }
+.sap-info { background: var(--gl); border-radius: 12px; padding: 8px 12px; font-size: 14px; margin-bottom: 6px; }
+.sap-cols { font-size: 12.5px; color: var(--muted); margin-bottom: 6px; }
+.sap-text { width: 100%; font: 13px ui-monospace, Consolas, monospace; border: 1.5px solid #cfe0d4; border-radius: 12px; padding: 10px; background: #f8fbf9; color: #1a2a1a; }
+.sap-preview { max-height: 240px; overflow: auto; border: 1px solid var(--line); border-radius: 12px; margin-top: 8px; }
+.sap-preview table { width: 100%; border-collapse: collapse; font-size: 13px; } .sap-preview th, .sap-preview td { padding: 5px 8px; border-bottom: 1px solid #edf2ee; text-align: left; }
+.sap-preview th { background: #eef6f1; position: sticky; top: 0; } .sap-preview .n { text-align: right; }
+.toast { position: fixed; left: 50%; bottom: 96px; transform: translateX(-50%); background: #14432b; color: #fff; padding: 10px 16px; border-radius: 12px; font-weight: 700; z-index: 99999; box-shadow: 0 6px 20px rgba(0,0,0,.25); max-width: 92vw; }
+.toast.err { background: #a8281b; }
+.pk-doc tr.sec td { background: #e8f5ee; color: #145f2f; font-weight: 800; padding-top: 6px; padding-bottom: 6px; }
+</style>
+<style>
+/* ---------- ใบพิมพ์ (PrintKit) ---------- */
+#pk-ov { position: fixed; inset: 0; z-index: 9999; background: #dfe6e2; display: flex; flex-direction: column; }
+.pk-bar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; padding: 10px 12px; background: #14432b; color: #fff; padding-top: max(10px, env(safe-area-inset-top)); }
+.pk-bar b { font-size: 16px; flex: 1 1 auto; }
+#pk-ov .pk-bar select { font: 600 15px Sarabun, sans-serif; padding: 8px 10px; border-radius: 10px; border: 0; max-width: 100%; min-height: 0; color: #1b2b22; -webkit-text-fill-color: #1b2b22; background: #fff; flex: 1 1 180px; }
+#pk-ov .pk-bar button { min-height: 0; }
+.pk-bar button { font: 700 15px Sarabun, sans-serif; border: 0; border-radius: 10px; padding: 9px 16px; cursor: pointer; }
+.pk-go { background: #f5c542; color: #3b2c00; }
+.pk-x { background: rgba(255,255,255,.15); color: #fff; }
+.pk-scroll { flex: 1; overflow: auto; padding: 14px 12px 30px; -webkit-overflow-scrolling: touch; }
+.pk-sheet { background: #fff; width: 210mm; min-height: 297mm; margin: 0 auto; padding: 12mm; box-shadow: 0 4px 22px rgba(0,0,0,.18); }
+.pk-msg { text-align: center; color: #4b5b52; font: 600 13px Sarabun, sans-serif; margin: 0 0 10px; }
+#pk-print { display: none; }
+.pk-doc { font-family: Sarabun, 'TH Sarabun New', sans-serif; color: #000; font-size: 12.5px; line-height: 1.35; }
+.pk-doc .pk-head { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #000; padding-bottom: 6px; margin-bottom: 8px; }
+.pk-doc h1 { font-size: 20px; margin: 0; font-weight: 800; }
+.pk-doc .pk-sub { font-size: 12px; color: #333; }
+.pk-doc .pk-docno { text-align: right; font-size: 12px; }
+.pk-doc .pk-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 18px; margin-bottom: 8px; }
+.pk-doc .pk-meta div { display: flex; gap: 6px; }
+.pk-doc .pk-meta span { color: #444; min-width: 92px; }
+.pk-doc table { width: 100%; border-collapse: collapse; }
+.pk-doc th, .pk-doc td { border: 1px solid #000; padding: 3px 5px; vertical-align: top; }
+.pk-doc th { background: #eee; font-weight: 700; text-align: center; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.pk-doc td.n, .pk-doc th.n { text-align: right; white-space: nowrap; }
+.pk-doc td.c { text-align: center; white-space: nowrap; }
+.pk-doc td.code { white-space: nowrap; }
+.pk-doc td.blank { min-width: 60px; }
+.pk-doc tr.hl td { background: #f2f2f2; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.pk-doc tfoot td { font-weight: 800; background: #f7f7f7; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.pk-doc thead { display: table-header-group; }
+.pk-doc tr { break-inside: avoid; page-break-inside: avoid; }
+.pk-doc .pk-sum { margin: 8px 0 0; font-size: 12.5px; }
+.pk-doc .pk-note { margin-top: 8px; border: 1px solid #000; padding: 4px 6px; min-height: 42px; }
+.pk-doc .pk-sign { display: grid; gap: 14px; margin-top: 26px; break-inside: avoid; page-break-inside: avoid; }
+.pk-doc .pk-sign div { text-align: center; font-size: 12.5px; }
+.pk-doc .pk-sign .ln { border-bottom: 1px dotted #000; height: 26px; margin: 0 6px 4px; }
+.pk-doc .pk-foot { margin-top: 14px; font-size: 10.5px; color: #555; display: flex; justify-content: space-between; }
+.pk-doc .pk-empty { text-align: center; padding: 18px; color: #555; }
+/* ธีมเขียว */
+.pk-doc { --pg: #145f2f; --pg2: #1a7a3c; --pgl: #e8f5ee; --pgm: #b8dfc8; }
+.pk-doc .pk-head { border-bottom: 3px solid var(--pg2); }
+.pk-doc .pk-kick { display: block; letter-spacing: .16em; font-size: 9.5px; color: var(--pg2); font-weight: 700; }
+.pk-doc h1 { color: var(--pg); }
+.pk-doc .pk-sub { color: var(--pg2); font-weight: 600; }
+.pk-doc .pk-meta { gap: 6px; grid-template-columns: repeat(3, 1fr); }
+.pk-doc .pk-meta div { display: block; background: var(--pgl); border-left: 3px solid var(--pg2); border-radius: 4px; padding: 3px 8px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.pk-doc .pk-meta span { display: block; font-size: 10px; min-width: 0; color: #4b6b55; }
+.pk-doc th { background: var(--pg2); color: #fff; border-color: var(--pg2); }
+.pk-doc td { border-color: var(--pgm); }
+.pk-doc tbody tr:nth-child(even) td { background: #f6fbf8; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.pk-doc tr.hl td, .pk-doc tbody tr.hl:nth-child(even) td { background: #fdecea; }
+.pk-doc tfoot td { background: var(--pgl); color: var(--pg); border-color: var(--pgm); }
+.pk-doc .pk-note { border: 1px solid var(--pgm); border-left: 3px solid var(--pg2); border-radius: 4px; }
+.pk-doc .pk-note b { color: var(--pg); }
+.pk-doc .pk-sign b { color: var(--pg); }
+.pk-doc .pk-foot { border-top: 1px solid var(--pgm); padding-top: 4px; }
+@media print {
+  @page { size: A4; margin: 10mm; }
+  html, body { background: #fff !important; }
+  body.pk-printing > *:not(#pk-print) { display: none !important; }
+  body.pk-printing #pk-print { display: block !important; }
+}
+</style>
+<script>
+/* PrintKit — หน้าตัวอย่างใบพิมพ์ A4 + สั่งพิมพ์ (ใช้ร่วมกันทั้ง 3 แอป) */
+window.PrintKit = (function () {
+  var esc = function (v) { return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c] }) }
+  var pad = function (n) { return (n < 10 ? '0' : '') + n }
+  function stamp() { var d = new Date(); return pad(d.getDate()) + '/' + pad(d.getMonth() + 1) + '/' + d.getFullYear() + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes()) }
+  // doc = { title, sub, docNoLabel, meta:[[label,value]], cols:[{h, cls, w}], rows:[{cells:[], hl}], foot:[cells]|null, summary:html, noteBox:label|null, sign:[labels], empty }
+  function render(doc) {
+    var h = '<div class="pk-doc">'
+    h += '<div class="pk-head"><div>' + (doc.kicker ? '<small class="pk-kick">' + esc(doc.kicker) + '</small>' : '') + '<h1>' + esc(doc.title) + '</h1>' + (doc.sub ? '<div class="pk-sub">' + esc(doc.sub) + '</div>' : '') + '</div>' +
+      '<div class="pk-docno">' + esc(doc.docNoLabel || 'เลขที่เอกสาร') + ' ......................</div></div>'
+    if (doc.meta && doc.meta.length) h += '<div class="pk-meta" style="grid-template-columns:repeat(' + (doc.meta.length % 4 === 0 ? 4 : 3) + ',1fr)">' + doc.meta.map(function (m) { return '<div><span>' + esc(m[0]) + '</span><b>' + esc(m[1]) + '</b></div>' }).join('') + '</div>'
+    h += '<table><colgroup>' + doc.cols.map(function (c) { return '<col' + (c.w ? ' style="width:' + c.w + '"' : '') + '>' }).join('') + '</colgroup>'
+    h += '<thead><tr>' + doc.cols.map(function (c) { return '<th' + (c.cls === 'n' ? ' class="n"' : '') + '>' + esc(c.h) + '</th>' }).join('') + '</tr></thead><tbody>'
+    if (!doc.rows.length) h += '<tr><td colspan="' + doc.cols.length + '" class="pk-empty">' + esc(doc.empty || 'ไม่มีรายการ') + '</td></tr>'
+    doc.rows.forEach(function (r) {
+      if (r.sec) { h += '<tr class="sec"><td colspan="' + doc.cols.length + '">' + esc(r.sec) + '</td></tr>'; return }
+      h += '<tr' + (r.hl ? ' class="hl"' : '') + '>' + r.cells.map(function (v, i) { var c = doc.cols[i].cls; return '<td' + (c ? ' class="' + c + '"' : '') + '>' + esc(v) + '</td>' }).join('') + '</tr>'
+    })
+    h += '</tbody>'
+    if (doc.foot && doc.rows.length) h += '<tfoot><tr>' + doc.foot.map(function (v, i) { var c = doc.cols[i] && doc.cols[i].cls; return '<td' + (c ? ' class="' + c + '"' : '') + '>' + esc(v) + '</td>' }).join('') + '</tr></tfoot>'
+    h += '</table>'
+    if (doc.summary) h += '<div class="pk-sum">' + doc.summary + '</div>'
+    if (doc.noteBox) h += '<div class="pk-note"><b>' + esc(doc.noteBox) + '</b></div>'
+    if (doc.sign && doc.sign.length) {
+      h += '<div class="pk-sign" style="grid-template-columns:repeat(' + doc.sign.length + ',1fr)">' + doc.sign.map(function (s) {
+        return '<div><div class="ln"></div>(.......................................)<br><b>' + esc(s) + '</b><br>วันที่ ....../....../......</div>'
+      }).join('') + '</div>'
+    }
+    h += '<div class="pk-foot"><span>พิมพ์เมื่อ ' + esc(stamp()) + '</span><span>' + esc(doc.footRight || '') + '</span></div>'
+    return h + '</div>'
+  }
+  var ov = null
+  function close() {
+    if (ov) { ov.remove(); ov = null }
+    document.removeEventListener('keydown', onKey, true)
+  }
+  function onKey(e) { if (e.key === 'Escape') { e.stopPropagation(); close() } }
+  function fit() {
+    if (!ov) return
+    var sc = ov.querySelector('.pk-scroll'), sh = ov.querySelector('.pk-sheet')
+    var w = sc.clientWidth - 24, full = 794 // 210mm ที่ 96dpi
+    sh.style.zoom = w < full ? String(Math.max(0.3, w / full)) : ''
+  }
+  // cfg = { name, options:[[value,label]], value, build(value) -> doc }
+  function open(cfg) {
+    close()
+    var cur = cfg.value || (cfg.options && cfg.options[0] ? cfg.options[0][0] : '')
+    ov = document.createElement('div')
+    ov.id = 'pk-ov'
+    ov.innerHTML = '<div class="pk-bar"><b>🖨️ ' + esc(cfg.name || 'พิมพ์') + '</b>' +
+      (cfg.options && cfg.options.length > 1 ? '<select class="pk-opt">' + cfg.options.map(function (o) { return '<option value="' + esc(o[0]) + '"' + (o[0] === cur ? ' selected' : '') + '>' + esc(o[1]) + '</option>' }).join('') + '</select>' : '') +
+      '<button type="button" class="pk-go">🖨️ สั่งพิมพ์</button><button type="button" class="pk-x">ปิด</button></div>' +
+      '<div class="pk-scroll"><p class="pk-msg">ตัวอย่างใบพิมพ์ (A4) — ตรวจแล้วกด "สั่งพิมพ์" · บนมือถือเลือกเครื่องพิมพ์ หรือบันทึกเป็น PDF ได้</p><div class="pk-sheet"></div></div>'
+    document.body.appendChild(ov)
+    var draw = function () { ov.querySelector('.pk-sheet').innerHTML = render(cfg.build(cur)); fit() }
+    var sel = ov.querySelector('.pk-opt')
+    if (sel) sel.addEventListener('change', function () { cur = sel.value; draw() })
+    ov.querySelector('.pk-x').addEventListener('click', close)
+    ov.querySelector('.pk-go').addEventListener('click', function () { print(render(cfg.build(cur))) })
+    document.addEventListener('keydown', onKey, true)
+    window.addEventListener('resize', fit)
+    draw()
+  }
+  function print(html) {
+    var box = document.getElementById('pk-print')
+    if (!box) { box = document.createElement('div'); box.id = 'pk-print'; document.body.appendChild(box) }
+    box.innerHTML = html
+    document.body.classList.add('pk-printing')
+    var done = function () { document.body.classList.remove('pk-printing'); window.removeEventListener('afterprint', done) }
+    window.addEventListener('afterprint', done)
+    try { window.print() } catch (e) { done() }
+  }
+  return { open: open, close: close, render: render, print: print }
+})()
+</script>
+
+<style>
+.rk-ov { position: fixed; inset: 0; z-index: 9000; background: rgba(10, 30, 18, 0.5); display: flex; align-items: flex-end; justify-content: center; }
+.rk-box { background: #fff; color: #1a2a1a; width: 100%; max-width: 560px; max-height: 92vh; overflow-y: auto; border-radius: 20px 20px 0 0; padding: 16px 16px calc(18px + env(safe-area-inset-bottom, 0px)); font-family: inherit; }
+@media (min-width: 700px) { .rk-ov { align-items: center; } .rk-box { border-radius: 20px; } }
+.rk-box h3 { margin: 0 0 4px; font-size: 18px; color: #145f2f; } .rk-box .rk-sub { margin: 0 0 12px; font-size: 13.5px; color: #5f7f5f; }
+.rk-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.rk-chips button { border: 1.5px solid #c8ddc8; background: #f4f8f5; color: #145f2f; border-radius: 99px; padding: 6px 12px; font: inherit; font-size: 13.5px; font-weight: 700; cursor: pointer; }
+.rk-chips button.on { background: #e8f5ee; border-color: #2d8a52; }
+.rk-dates { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+.rk-dates label { display: block; font-size: 13px; font-weight: 700; color: #4a6a4a; }
+.rk-dates input { display: block; width: 100%; margin-top: 4px; min-height: 44px; border: 1.5px solid #c8ddc8; border-radius: 10px; padding: 8px 10px; font: inherit; color: #1a2a1a; background: #f4f8f5; }
+.rk-btn { min-height: 46px; border-radius: 12px; border: 1.5px solid #c8ddc8; background: #fff; color: #145f2f; font: inherit; font-weight: 800; padding: 0 14px; cursor: pointer; }
+.rk-btn.pri { background: linear-gradient(135deg, #2d8a52, #1a6b3c); color: #fff; border: 0; } .rk-btn:disabled { opacity: 0.5; }
+.rk-row { display: flex; gap: 8px; flex-wrap: wrap; } .rk-row .rk-btn { flex: 1; min-width: 96px; }
+.rk-res { margin-top: 12px; } .rk-info { background: #f3f8f4; border: 1px solid #d6e4da; border-radius: 12px; padding: 10px 12px; font-size: 14px; line-height: 1.55; margin-bottom: 10px; }
+.rk-err { background: #fdecea; border: 1px solid #f1b0a8; color: #8e1e12; border-radius: 12px; padding: 10px 12px; font-size: 14px; font-weight: 700; }
+.rk-res select { width: 100%; min-height: 44px; border: 1.5px solid #c8ddc8; border-radius: 10px; padding: 6px 10px; font: inherit; color: #1a2a1a; background: #fff; margin-bottom: 8px; }
+.rk-close { margin-top: 10px; width: 100%; }
+</style>
+<script>
+/* ===== RangeKit: ดึงข้อมูลย้อนหลังตามช่วงวันที่ + ส่งออก Excel / CSV (ใช้ร่วมกันทุกแอป) ===== */
+window.RK = (function () {
+  const pad = (n) => (n < 10 ? '0' : '') + n
+  const dk = (d) => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate())
+  const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
+  const xe = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])).replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, '')
+  const dTH = (k) => { const p = String(k || '').split('-'); return p.length === 3 ? Number(p[2]) + '/' + Number(p[1]) + '/' + p[0] : String(k || '') }
+  const fname = (s) => String(s).replace(/[\\/:*?"<>|]+/g, '-').replace(/\s+/g, '_')
+  function saveBlob(name, blob) {
+    const url = URL.createObjectURL(blob), a = document.createElement('a')
+    a.href = url; a.download = fname(name); a.style.display = 'none'
+    document.body.appendChild(a); a.click(); a.remove()
+    setTimeout(() => URL.revokeObjectURL(url), 8000)
+  }
+  // CSV: ใส่ BOM ให้ Excel อ่านภาษาไทยถูก
+  function csv(name, heads, rows) {
+    const c = (v) => { v = v == null ? '' : String(v); return /[",\r\n]/.test(v) || /^\s|\s$/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v }
+    const txt = '﻿' + [heads].concat(rows).map((r) => r.map(c).join(',')).join('\r\n')
+    saveBlob(name + '.csv', new Blob([txt], { type: 'text/csv;charset=utf-8' }))
+  }
+  // XLSX แบบไม่ต้องใช้ไลบรารี (zip store)
+  const CRC = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0 } return t })()
+  const crc32 = (u) => { let c = 0xffffffff; for (let i = 0; i < u.length; i++) c = CRC[(c ^ u[i]) & 0xff] ^ (c >>> 8); return (c ^ 0xffffffff) >>> 0 }
+  function zip(files) {
+    const enc = new TextEncoder(), parts = [], cen = []
+    let off = 0
+    files.forEach((f) => {
+      const nm = enc.encode(f.name), data = enc.encode(f.data), crc = crc32(data)
+      const h = new DataView(new ArrayBuffer(30))
+      h.setUint32(0, 0x04034b50, true); h.setUint16(4, 20, true); h.setUint16(6, 0x0800, true); h.setUint16(8, 0, true)
+      h.setUint32(14, crc, true); h.setUint32(18, data.length, true); h.setUint32(22, data.length, true); h.setUint16(26, nm.length, true)
+      parts.push(new Uint8Array(h.buffer), nm, data)
+      const c = new DataView(new ArrayBuffer(46))
+      c.setUint32(0, 0x02014b50, true); c.setUint16(4, 20, true); c.setUint16(6, 20, true); c.setUint16(8, 0x0800, true)
+      c.setUint32(16, crc, true); c.setUint32(20, data.length, true); c.setUint32(24, data.length, true); c.setUint16(28, nm.length, true); c.setUint32(42, off, true)
+      cen.push(new Uint8Array(c.buffer), nm)
+      off += 30 + nm.length + data.length
+    })
+    const csz = cen.reduce((a, x) => a + x.length, 0), e = new DataView(new ArrayBuffer(22))
+    e.setUint32(0, 0x06054b50, true); e.setUint16(8, files.length, true); e.setUint16(10, files.length, true); e.setUint32(12, csz, true); e.setUint32(16, off, true)
+    return new Blob(parts.concat(cen, [new Uint8Array(e.buffer)]), { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+  }
+  function colName(i) { let s = ''; i++; while (i > 0) { const m = (i - 1) % 26; s = String.fromCharCode(65 + m) + s; i = Math.floor((i - 1) / 26) } return s }
+  function xlsx(name, heads, rows, widths, sheet) {
+    const cell = (ref, v, st) => (typeof v === 'number' && isFinite(v)) ? '<c r="' + ref + '"' + (st ? ' s="' + st + '"' : '') + '><v>' + v + '</v></c>' : (v === '' || v == null ? '' : '<c r="' + ref + '" t="inlineStr"' + (st ? ' s="' + st + '"' : '') + '><is><t xml:space="preserve">' + xe(v) + '</t></is></c>')
+    let sd = '<row r="1">' + heads.map((h, i) => cell(colName(i) + '1', h, 1)).join('') + '</row>'
+    rows.forEach((r, k) => { const n = k + 2; sd += '<row r="' + n + '">' + r.map((v, i) => cell(colName(i) + n, v)).join('') + '</row>' })
+    const W = widths || heads.map((h) => Math.max(10, Math.min(40, String(h).length + 6)))
+    const X = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n', NS = 'http://schemas.openxmlformats.org/spreadsheetml/2006/main', R = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships'
+    const ws = X + '<worksheet xmlns="' + NS + '"><sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><cols>' + W.map((w, i) => '<col min="' + (i + 1) + '" max="' + (i + 1) + '" width="' + w + '" customWidth="1"/>').join('') + '</cols><sheetData>' + sd + '</sheetData></worksheet>'
+    const st = X + '<styleSheet xmlns="' + NS + '"><fonts count="2"><font><sz val="11"/><name val="Tahoma"/></font><font><b/><color rgb="FFFFFFFF"/><sz val="11"/><name val="Tahoma"/></font></fonts><fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF1A6B3C"/><bgColor indexed="64"/></patternFill></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="2"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1"/></cellXfs></styleSheet>'
+    saveBlob(name + '.xlsx', zip([
+      { name: '[Content_Types].xml', data: X + '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>' },
+      { name: '_rels/.rels', data: X + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="' + R + '/officeDocument" Target="xl/workbook.xml"/></Relationships>' },
+      { name: 'xl/workbook.xml', data: X + '<workbook xmlns="' + NS + '" xmlns:r="' + R + '"><sheets><sheet name="' + xe(String(sheet || 'ข้อมูล').slice(0, 31).replace(/[\\/?*[\]:]/g, '-')) + '" sheetId="1" r:id="rId1"/></sheets></workbook>' },
+      { name: 'xl/_rels/workbook.xml.rels', data: X + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="' + R + '/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="' + R + '/styles" Target="styles.xml"/></Relationships>' },
+      { name: 'xl/styles.xml', data: st },
+      { name: 'xl/worksheets/sheet1.xml', data: ws }
+    ]))
+  }
+  // หน้าต่างเลือกช่วงวันที่ → ดึงข้อมูล → พิมพ์ / Excel / CSV
+  function rangeModal(o) {
+    const today = new Date(), back = (n) => { const d = new Date(); d.setDate(d.getDate() - n); return dk(d) }
+    const mStart = (k) => { const d = new Date(today.getFullYear(), today.getMonth() + k, 1); return dk(d) }
+    const mEnd = (k) => { const d = new Date(today.getFullYear(), today.getMonth() + k + 1, 0); return dk(d) }
+    const presets = [['7', 'ย้อนหลัง 7 วัน', back(6), dk(today)], ['14', '14 วัน', back(13), dk(today)], ['30', '30 วัน', back(29), dk(today)], ['m0', 'เดือนนี้', mStart(0), dk(today)], ['m1', 'เดือนก่อน', mStart(-1), mEnd(-1)]]
+    const def = presets.find((p) => p[0] === String(o.days || 14)) || presets[1]
+    const ov = document.createElement('div')
+    ov.className = 'rk-ov'
+    ov.innerHTML = '<div class="rk-box" role="dialog" aria-label="' + esc(o.title) + '"><h3>' + esc(o.title) + '</h3><p class="rk-sub">' + esc(o.sub || 'ข้อมูลทั้งหมดเก็บในชีต ดึงย้อนหลังได้ทุกวันที่') + '</p>' +
+      '<div class="rk-chips">' + (o.presets === false ? [] : presets).map((p) => '<button type="button" data-rk-p="' + p[0] + '"' + (p === def && !o.from ? ' class="on"' : '') + '>' + p[1] + '</button>').join('') + '</div>' +
+      '<div class="rk-dates"><label>ตั้งแต่วันที่<input type="date" id="rk-from" value="' + (o.from || def[2]) + '"></label><label>ถึงวันที่<input type="date" id="rk-to" value="' + (o.to || def[3]) + '"></label></div>' +
+      '<button type="button" class="rk-btn pri" id="rk-go" style="width:100%">🔎 ดึงข้อมูล</button><div class="rk-res" id="rk-res"></div>' +
+      '<button type="button" class="rk-btn rk-close" id="rk-x">ปิด</button></div>'
+    document.body.appendChild(ov)
+    const $ = (s) => ov.querySelector(s)
+    const close = () => { ov.remove(); document.removeEventListener('keydown', onKey, true) }
+    const onKey = (e) => { if (e.key === 'Escape' && !document.getElementById('pk-ov') && !document.getElementById('pv')) close() }
+    document.addEventListener('keydown', onKey, true)
+    ov.addEventListener('click', (e) => { if (e.target === ov) close() })
+    $('#rk-x').onclick = close
+    ov.querySelectorAll('[data-rk-p]').forEach((b) => { b.onclick = () => { const p = presets.find((x) => x[0] === b.dataset.rkP); $('#rk-from').value = p[2]; $('#rk-to').value = p[3]; ov.querySelectorAll('[data-rk-p]').forEach((x) => x.classList.toggle('on', x === b)); run() } })
+    let busy = false, data = null
+    async function run() {
+      const from = $('#rk-from').value, to = $('#rk-to').value, res = $('#rk-res')
+      if (!from || !to) { res.innerHTML = '<div class="rk-err">เลือกวันที่ให้ครบ</div>'; return }
+      if (from > to) { res.innerHTML = '<div class="rk-err">วันที่เริ่มต้องไม่หลังวันที่สิ้นสุด</div>'; return }
+      if (busy) return
+      busy = true; $('#rk-go').disabled = true; $('#rk-go').textContent = 'กำลังดึงข้อมูล…'; res.innerHTML = ''
+      try { data = await o.run(from, to) } catch (e) { data = null; res.innerHTML = '<div class="rk-err">ดึงข้อมูลไม่สำเร็จ: ' + esc(e && e.message ? e.message : e) + '</div>' }
+      busy = false; $('#rk-go').disabled = false; $('#rk-go').textContent = '🔎 ดึงข้อมูล'
+      if (!data) return
+      const label = dTH(from) + ' – ' + dTH(to)
+      if (!data.rows.length) { res.innerHTML = '<div class="rk-info">ไม่มีข้อมูลช่วง ' + esc(label) + '</div>'; return }
+      res.innerHTML = '<div class="rk-info"><b>ช่วง ' + esc(label) + '</b><br>' + (data.summary || (data.rows.length + ' แถว')) + '</div>' + (data.extra || '') +
+        '<div class="rk-row">' + (data.print ? '<button type="button" class="rk-btn pri" data-rk="print">🖨️ พิมพ์</button>' : '') + '<button type="button" class="rk-btn" data-rk="xlsx">📗 Excel</button><button type="button" class="rk-btn" data-rk="csv">📄 CSV</button></div>'
+      const file = (data.file || o.title) + '_' + from + '_ถึง_' + to
+      res.querySelectorAll('[data-rk]').forEach((b) => {
+        b.onclick = () => {
+          try {
+            if (b.dataset.rk === 'print') data.print(from, to)
+            else if (b.dataset.rk === 'xlsx') xlsx(file, data.heads, data.rows, data.widths, data.sheet || o.title)
+            else csv(file, data.heads, data.rows)
+          } catch (e) { alertBox(e) }
+        }
+      })
+      if (data.bind) data.bind(res, from, to)
+    }
+    const alertBox = (e) => { const r = $('#rk-res'); const d = document.createElement('div'); d.className = 'rk-err'; d.textContent = 'ทำไม่สำเร็จ: ' + (e && e.message ? e.message : e); r.prepend(d) }
+    $('#rk-go').onclick = run
+    if (o.autoRun !== false) run()
+    return { close: close }
+  }
+  // ค้นหาแบบใกล้เคียง: ตรงบางส่วน > ตัวอักษรเรียงตามลำดับ (ไม่ต้องพิมพ์ครบ)
+  const norm = (s) => String(s || '').toLowerCase().replace(/[\s\-_.,()\/:'"+]+/g, '')
+  function fuzzy(q, text) {
+    const t = norm(text), toks = String(q || '').toLowerCase().split(/\s+/).map(norm).filter(Boolean)
+    if (!toks.length) return -1
+    let total = 0
+    for (const k of toks) {
+      const i = t.indexOf(k)
+      if (i >= 0) { total += 1000 - Math.min(i, 500); continue }
+      if (k.length < 3) return -1
+      let last = -1, gaps = 0
+      for (const ch of k) { const j = t.indexOf(ch, last + 1); if (j < 0) return -1; if (last >= 0) gaps += j - last - 1; last = j }
+      if (gaps > k.length * 3) return -1
+      total += 400 - gaps * 10
+    }
+    return total / toks.length
+  }
+  return { saveBlob: saveBlob, csv: csv, xlsx: xlsx, rangeModal: rangeModal, fuzzy: fuzzy, dTH: dTH, dk: dk }
+})()
+</script>
+
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <a class="tb-home" href="https://suphatsonw-glitch.github.io/homepage/" title="กลับหน้าโฮม">🏠</a>
+    <div class="tb-logo" style="color:#fff"><svg viewBox="0 0 48 48" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 16V6h18v10"/><path d="M19 10.5h10"/><rect x="5" y="16" width="38" height="12" rx="3"/><path d="M3 22h4M41 22h4"/><path d="M8 28l-2 12h36l-2-12"/><path d="M13 33h2M19 33h2M25 33h2M31 33h2M16 37.5h16"/></svg></div>
+    <div class="tb-txt"><b>คีย์ยอดพระราม 4</b><small>แยก Grab / LINE MAN · รวมยอดลง SAP (Whse WH05)</small></div>
+    <span class="tb-day" id="tb-day" hidden></span>
+  </header>
+  <nav class="tabs" id="tabs">
+    <button type="button" class="tab" data-v="import">📂 นำเข้า</button>
+    <button type="button" class="tab" data-v="orders">🧾 ออเดอร์</button>
+    <button type="button" class="tab" data-v="sum">📦 รวมยอด</button>
+  </nav>
+  <main class="view" id="view"></main>
+  <footer class="dock" id="dock"></footer>
+</div>
+<script>
+window.PRODUCT_DB = {"FG01002": ["เบบี้คอส Baby Cos", "PACK 300g"], "FG01003": ["โรเมนคอส Romaine Cos", "PACK 500g"], "FG01004": ["กรีนโอ๊ค Green Oak", "PACK 300g"], "FG01005": ["เรดโอ๊ค Red Oak", "PACK 300g"], "FG01006": ["ฟินเลย์ ไอซเบิร์ก Frillice Iceberg", "PACK 300g"], "FG01007": ["เรด คอรอล Red Coral", "PACK 300g"], "FG01008": ["บัตเตอร์เฮด Butterhead", "PACK 300g"], "FG01009": ["ผักกาดแก้ว Iceberg", "PACK 300g"], "FG01010": ["ผักขม ปวยเหล็ง Chinese Spinach", "PACK 250g"], "FG01011": ["เบบี้สปีแนช Baby Spinach", "PACK 100g"], "FG01014": ["ร็อกเก็ตป่าตัดราก Wild Rocket", "PACK 100g"], "FG01016": ["วอเตอร์เครสนอก French Watercress", "PACK 100g"], "FG01017": ["คะน้าฝรั่งใบหยิก Curly Kale", "PACK 100g"], "FG01018": ["สวิสชาร์ดเบบี้ Baby Swiss Chard", "PACK 100g"], "FG01019": ["คะน้าฮ่องกง Chinese Kale", "PACK 250g"], "FG01020": ["กวางตุ้งฮ่องเต้ Shanghai Bok Choy", "PACK 250g"], "FG01022": ["ใบงาเกาหลี Kkaennip leaf", "PACK 10pc"], "FG01032": ["เบบี้คะน้าฝรั่งใบหยิก Baby Curly Kale", "PACK 50g"], "FG01033": ["คอสไม่ตัดราก Cos salad with root", "PACK 250g"], "FG01035": ["เดลิชสลัดมิกซ์ Salad Mixed Delish Foods", "PACK 100g"], "FG01037": ["ผักสลัดรวมตัดแต่ง Classic Salad Mixed", "PACK 150g"], "FG01094": ["ใบเบบี้คอส Baby Cos Leaf", "PACK 100g"], "FG02001": ["กะหล่ำปลี Cabbage", "PACK 1kg"], "FG02002": ["กะหล่ำม่วง Red Cabbage", "PACK 800g"], "FG02003": ["ดอกกะหล่ำ Cauliflower", "PACK 400g"], "FG02004": ["บรอกโคลี่ Broccoli", "PACK 400g"], "FG02005": ["บรอกโคลินี่ Broccolini", "PACK 300g"], "FG02006": ["กะหล่ำดาว Brussel Sprout", "PACK 250g"], "FG03002": ["หน่อไม้ฝรั่ง บี Asparagus B", "PACK 250g"], "FG03006": ["เซเลอรี่ Celery", "PACK 1kg"], "FG03007": ["เฟนเนลหัว Bulb Fennel", "PACK 200g"], "FG04001": ["พาสเลย์ใบหยิก Curly Parsley", "PACK 30g"], "FG04002": ["อิตาเลี่ยนพาสเลย์ Italian Parsley", "PACK 30g"], "FG04003": ["โรสแมรี่ Rosemary", "PACK 30g"], "FG04004": ["ผักชีลาว Dill", "PACK 100g"], "FG04006": ["ไทม์ Thyme", "PACK 30g"], "FG04007": ["โหระพาฝรั่ง Sweet Basil", "PACK 100g"], "FG04008": ["โหระพาไทย Thai Basil", "PACK 100g"], "FG04009": ["สะระแหน่ Mint", "PACK 100g"], "FG04010": ["ผักชีไทย Coriander", "PACK 50g"], "FG04011": ["ผักชีฝรั่ง(ใบเลื่อย) Sawtooth Coriander", "PACK 50g"], "FG04012": ["ทาร์รากอน Tarragon", "PACK 30g"], "FG04014": ["ต้นหอม Spring Onion", "PACK 50g"], "FG05001": ["เห็ดออรินจิ Erinji Mushroom", "PACK 200g"], "FG05002": ["เห็ดชิเมจิขาว-Shimeji White 125g", "PACK"], "FG05003": ["เห็ดชิเมจิน้ำตาล Shimeji Brown 125g", "PACK"], "FG05004": ["เห็ดหอม Shiitake Mushroom", "PACK 200g"], "FG05007": ["เห็ดเข็มทอง Enoki Mushroom 100g", "PACK"], "FG05008": ["เห็ดแชมปิญอง Champignon Mushroom", "PACK 250g"], "FG05010": ["เห็ดสวิส บราวน์ Swiss Brown Mushroom", "PACK 200g"], "FG05012": ["เห็ดหอมแห้ง Dried Shiitake", "PACK 80g"], "FG05016": ["เห็ดไมตาเกะ Maitake (Ready To Cook)", "PACK"], "FG06001": ["แรดิช Red Radish", "PACK 200g"], "FG06002": ["หัวไชเท้า Oriental Radish", "PACK 800g"], "FG06003": ["บีทรูท Beetroot", "PACK 500g"], "FG06004": ["แครอท Carrot", "PACK 500g"], "FG06005": ["เบบี้แครอทสีส้ม Orange Baby Carrot", "PACK 250g"], "FG06008": ["มันฝรั่งเบอร์โอ Potato Size O", "PACK 500g"], "FG06009": ["มันซุป Cocktail Potato", "PACK 500g"], "FG06010": ["มันฝรั่งรัสเซท Potato Russet", "PACK 1kg"], "FG06012": ["มันหวานญี่ปุ่น Japanese Sweet Potato", "PACK 500g"], "FG06022": ["มันหวานญี่ปุ่น พันธ์แท้เบนิฮารุกะ Sweet Potato Beni Haruka", "PACK 1kg"], "FG06037": ["(AUS) แครอท 4 สี Heirloom Baby Carrot", "pack 250g"], "FG06099": ["(AUS) Carrot แครอทออสเตเลีย", "PACK 500g"], "FG06102": ["(AUS) Sweet Potato Gold", "PACK 500g"], "FG06103": ["(AUS) Sweet Potato Purple", "PACK 500g"], "FG07001": ["ฟักทองไทย Thai Pumpkin", "PACK 1kg"], "FG07002": ["ฟักทองญี่ปุ่น Japanese Pumpkin", "PACK 1kg"], "FG07003": ["ซูกินี Zucchini", "PACK 500g"], "FG07004": ["แตงกวาญี่ปุ่น Japanese Cucumber", "PACK 500g"], "FG07006": ["ฟักทองมินิบอล Mini Ball Pumpkin", "PACK 1kg"], "FG07007": ["บัตเตอร์นัทสควอช Butternut Squash", "PACK 1kg"], "FG07040": ["แตงกวามินิคิวค์ คริสปี้ Mini Cuke Crispy", "Pack 250g"], "FG08002": ["หอมใหญ่เบอร์โอ Onion size O", "PACK 500g"], "FG08003": ["หอมแขก Red Onion", "PACK 300g"], "FG08004": ["ต้นกระเทียม Leek", "PACK 300g"], "FG08005": ["ต้นหอมญี่ปุ่น Japanese Bunching Onion", "PACK 300g"], "FG08006": ["ถั่วลันเตาหวาน Sugar Snap Pea", "PACK 250g"], "FG08007": ["ข้าวโพดหวาน Sweet Corn", "PACK 400g"], "FG08008": ["ข้าวโพดฝักอ่อน Baby Corn", "PACK 200g"], "FG08009": ["ข้าวโพดเทียน Waxy Corn", "PACK 1kg"], "FG08012": ["ถั่วแขก French Bean", "PACK 200g"], "FG08015": ["กระเทียมจีนทั้งลูก Whole Garlic", "PACK 250g"], "FG08016": ["กระเทียมจีนแกะ Peeled Garlic", "PACK 100g"], "FG08017": ["หอมใหญ่ปอกเปลือก Onion Peeled", "PACK 200g"], "FG08018": ["หอมแขกปอกเปลือก Red Onion Peeled", "PACK 200g"], "FG08044": ["ข้าวโพดทับทิมสยาม Siam Ruby Corn", "PACK 1pc"], "FG08045": ["ข้าวโพดเพียวไวท์ Purewhite Hokkaido", "PCE"], "FG08056": ["ข้าวโพดหวานพรีมาโกลด์ Premagold Sweet Corn", "pce"], "FG09001": ["พริกหวานเขียว Green Bell Pepper", "PACK 200g"], "FG09002": ["พริกหวานแดง Red Bell Pepper", "PACK 200g"], "FG09003": ["พริกหวานเหลือง Yellow Bell Pepper", "PACK 200g"], "FG09004": ["มะเขือม่วง Pear Eggplant", "PACK 500g"], "FG09005": ["มะเขือม่วงยาวก้านดำ Long Eggplant", "PACK 500g"], "FG09006": ["เลมอน Lemon", "PACK 600g"], "FG09010": ["มะเขือเทศท้อ Tomato Plum", "PACK 400g"], "FG09011": ["มะเขือเทศเนื้อ Tomato Beef", "PACK 500g"], "FG09012": ["มะเขือเทศเชอร์รี่ Cherry Tomato", "PACK 200g"], "FG09014": ["มะเขือเชอรี่พวง Tomato Cherry Vine", "PACK 200g"], "FG09018": ["พริกชิชิโต Shishito Pepper", "Pack 100g"], "FG09020": ["พริกแม็กซิกัน Jalapeno Pepper", "PACK 100g"], "FG09022": ["มะเขือเชอรี่กลมสีแดง Red Berry Tomato", "PACK 200g"], "FG09023": ["มะเขือเชอรี่กลมสีเหลือง Yellow Berry Tomato", "PACK 200g"], "FG09025": ["มะเขือเชอรี่คละสี Fancy Tomato", "PACK 200g"], "FG09027": ["มะเขือเชอรี่สีเหลือง Creamy", "Pack 250g"], "FG09028": ["มะเขือเชอรี่สีน้ำตาล Smoky", "Pack 250g"], "FG09032": ["มะเขือเชอรี่สีส้ม Sandy", "Pack 250g"], "FG09034": ["มะเขือเชอรี่สีเขียว Greeny", "Pack 250g"], "FG09058": ["มะเขือเทศราชินีคละสี", "PACK 200g"], "FG09068": ["มะเขือเทศฟักทอง Ribbed Tomato", "Pack 250g"], "FG09074": ["พริกหวาน 3 สี", "PACK"], "FG09075": ["พริกหวานออร่า Aura Sweet Pepper", "Pack 200g"], "FG10002": ["กีวีเขียว Green Kiwi", "PACK 4pc"], "FG10003": ["เกรฟฟรุต Grape Fruit", "pack 1kg"], "FG10004": ["แก้วมังกร Dragon Fruit", "PACK 500g"], "FG10005": ["แคนตาลูป Cantaloupe", "PCE"], "FG10006": ["แตงโม Watermelon", "PCE"], "FG10007": ["ทับทิมอินเดีย Pomegranate 12pce/BOX", "PCE"], "FG10008": ["บลูเบอรี่สด Blueberry (125 g/pack)", "PACK"], "FG10010": ["มะพร้าวอ่อน Coconut Young", "PCE"], "FG10011": ["มะม่วงสุก Mango Ripe", "PACK 1kg"], "FG10014": ["มะละกอสุกฮอลแลนด์ Papaya Ripe Holland", "PACK 1kg"], "FG10016": ["เมลอนเนื้อเขียว Melon Green Flesh", "PCE"], "FG10017": ["เมลอนเนื้อส้ม Melon Orange Flesh", "PCE"], "FG10019": ["ส้มคั้นน้ำ Orange for Juice", "PACK 1kg"], "FG10020": ["ส้มซันคิส Orange Sunkist 14 KG", "PACK 1kg"], "FG10022": ["ส้มแมนดาริน Orange Mandarin 7 KG", "PACK 1kg"], "FG10023": ["ส้มโอขาวน้ำผึ้ง Pomelo", "PCE"], "FG10024": ["สับปะรด Pineapple", "PCE"], "FG10027": ["สาลี่ Chinese Pear", "PACK 3pc"], "FG10029": ["เสาวรส Passion Fruit", "PACK 500g"], "FG10030": ["องุ่นเขียวไร้เมล็ด Green Grape Seedless", "PACK 500g"], "FG10031": ["องุ่นดำไร้เมล็ด Black Grape Seedless", "PACK 500g"], "FG10032": ["องุ่นแดงไร้เมล็ด Red Grape Seedless", "PACK 500g"], "FG10033": ["แอปเปิ้ลเขียว Apple Green Granny Smith", "PACK 4pc"], "FG10035": ["แอปเปิ้ลกาล่า Apple Gala 120pc", "PACK 4pc"], "FG10038": ["ส้มซันคิสคาราคาร่า Orange Sunkist Cara Cara", "PACK 1kg"], "FG10042": ["เชอร์รี่นำเข้า Imported Cherry 5 KG", "PACK 500g"], "FG10043": ["องุ่นดำนิ้วแม่มด Witch Finger Grape", "PACK 500g"], "FG10044": ["ส้มแมนดาริน Orange Mandarin 9 KG", "PACK 1kg"], "FG10045": ["ทับทิมอินเดีย Pomegranate 10pce/BOX", "PCE"], "FG10047": ["กีวีเบอร์รี่ Kiwiberry (125 g/pack)", "PACK"], "FG10049": ["กีวีสีทอง Golden Kiwi", "PACK 4pc"], "FG10051": ["ลิ้นจี่ พันธุ์สนมยิ้ม Lychee Fei Zhi Xiao", "PACK 1kg"], "FG10052": ["แอปเปิ้ลเอ็นวี่ Apple Envy", "PACK 2pc"], "FG10053": ["แอปเปิ้ลควีน Apple Queen", "PACK 4pc"], "FG10057": ["แตงโมเหลือง Yellow Watermelon", "PACK 4kg"], "FG10058": ["เมลอนเนื้อขาว Golden Pearl Melon", "PCE"], "FG10061": ["พุทราช็อกโกแลต Chinese Jujube", "PACK 1kg"], "FG10062": ["สตอเบอรี่ Strawberry (8x250g)", "PACK 250g"], "FG10064": ["ทับทิมตูนีเซีย Tunisia Pomegranate", "PCE"], "FG10066": ["เคปกูสเบอรี่ Cape Gooseberry", "PACK 500g"], "FG10067": ["อโวคาโดแฮส Avocado Hass (30 pce/box)", "PCE"], "FG10068": ["แอปเปิ้ลฟูจิ Fuji Apple", "PACK 2pc"], "FG10069": ["ส้มแมนดารินจิ๋ว Baby Mandarin Orange", "PACK 1kg"], "FG10074": ["กล้วยหอมห่าม Banana Half-Ripe", "PCE"], "FG10080": ["แอปเปิ้ลเชอรีส Apple Cherish", "PACK 4pc"], "FG10081": ["มะเดื่อฝรั่ง Fig", "PACK 200g"], "FG10087": ["ฝรั่ง Green Guava", "PACK 1kg"], "FG10090": ["เงาะ Rambutan", "PACK 1kg"], "FG10092": ["กล้วยน้ำว้า Banana", "PCE"], "FG10093": ["ลำไย Longan", "PACK 1kg"], "FG10094": ["มังคุด Mangosteen", "PACK 1kg"], "FG10095": ["มะยงชิด Sweet Yellow Marian Plum", "PACK 1kg"], "FG10098": ["แก้วมังกรแดง Red Drogon Fruit", "PACK 500g"], "FG10100": ["ฝรั่งไส้แดง Red Guava", "PACK 1kg"], "FG10101": ["มะพร้าวเผา Roasted Coconut", "PCE"], "FG10102": ["ฝรั่งกิมจู Guava Gimju", "PACK 1kg"], "FG10105": ["ส้มโอทับทิมสยาม Siam Ruby Pomelo", "PCE"], "FG10106": ["สละ Salacca", "PACK 1kg"], "FG10107": ["พลับนิวซีแลนด์ New Zealand Persimmon", "pce"], "FG10109": ["แอปเปิ้ลกิลแม็ค Apple Gilmac NZ", "PACK 2pc"], "FG10112": ["พีชขาว White Peach USA/AUS", "PACK 600g"], "FG10113": ["องุ่นไชน์มัสแคท Shine Muscat Grape", "PACK 500g"], "FG10115": ["แอปเปิ้ลออแกนิก Apple Candine FR", "PACK 4pc"], "FG10159": ["แพรแดง Red Pear SA", "PACK 2pc"], "FG10163": ["สับปะรดภูแล Pineapple Phulae", "PCE"], "FG10169": ["สตอเบอรี่ Strawberry USA (12x250g)", "PACK 250g"], "FG10171": ["ลูกฟิกส์อบแห้ง", "PACK 500g"], "FG10172": ["แอปริคอตอบแห้ง", "PACK 500g"], "FG10173": ["เม็ดมะม่วงหิมพานต์อบแห้ง", "PACK 500g"], "FG10178": ["สตอเบอรี่ Strawberry AUS (15x250g)", "PACK 250g"], "FG10181": ["(AUS) Blood Orange", "PACK 1kg"], "FG10183": ["ราสเบอรี่ Raspberry (125 g/pack)", "pack"], "FG10187": ["ชมพู่ทับทิมจันทร์ Tubtim Chandra Rose Apples", "PACK 1kg"], "FG10228": ["แตงโมส้มควีนเลดี้ Orange Queen Lady Watermelon", "PACK 4kg"], "FG10233": ["แตงโมเล็ก Small Watermelon", "PCE"], "FG10234": ["แคนตาลูปไข่มุก Pearl Cantaloupe", "PCE"], "FG10235": ["กีวีแดง Ruby Red Kiwi", "PACK 2pc"], "FG10241": ["มะม่วงสุก Mango Ripe (4-5 PCE/KG)", "pack 1kg"], "FG10250": ["น้อยหน่าสีม่วง Purple Custard Apple", "PACK 1kg"], "FG10252": ["เมลอนสีทอง Golden Melon", "PCE"], "FG10253": ["แก้วมังกรเหลือง Yellow Dragon Fruit", "PACK 500g"], "FG10255": ["แอปเปิ้ลโซลูน่า Soluna Apple", "pack 2pc"], "FG10257": ["ส้มเอฮิเมะ Ehime Orange", "PCE"], "FG10258": ["แบล็กเบอร์รี่ Blackberry (100g/pack)", "Pack 100g"], "FG11001": ["ผักโขมไทย Thai Spinach", "PACK 250g"], "FG11003": ["ผักบุ้งจีน Chinese Morning Glory", "PACK 300g"], "FG11004": ["ผักบุ้งไทย Thai Morning Glory", "PACK 300g"], "FG11006": ["คะน้าไทย Thai Kale", "PACK 300g"], "FG11007": ["ขึ้นฉ่ายไทย Thai Celery", "PACK 50g"], "FG11009": ["ตำลึง Coccinia Grandis", "PACK 300g"], "FG11010": ["ยอดฟักแม้ว Chayote Shoots", "PACK 300g"], "FG11011": ["ชะอม Acacia Pennata", "PACK 250g"], "FG11016": ["ผักกาดขาว Chinese Cabbage", "PACK 1kg"], "FG11018": ["ผักกาดหอม Lettuce", "PACK 300g"], "FG11020": ["ยอดคะน้า Baby Kale Thai", "PACK 250g"], "FG11022": ["ผักกวางตุ้ง Kwang Tung", "PACK 250g"], "FG12001": ["ใบกะเพรา Holy Basil", "PACK 100g"], "FG12003": ["กระชายหัว Finger Root", "PACK 100g"], "FG12005": ["กระเทียมไทยกลีบ Thai Garlic", "PACK 100g"], "FG12006": ["กระเทียมไทยทั้งลูก Thai Whole Garlic", "PACK 250g"], "FG12007": ["ขิงอ่อน Ginger Young", "PACK 200g"], "FG12009": ["ขิงแก่ Ginger", "PACK 200g"], "FG12010": ["ข่าแก่ Mature Galangal", "PACK 200g"], "FG12012": ["ตะไคร้ Lemon Grass", "PACK 100g"], "FG12013": ["ใบแมงลัก Thai Lemon Basil", "PACK 100g"], "FG12014": ["ใบมะกรูด Kaffir Lime Leaves", "PACK 20g"], "FG12015": ["มะขามเปียก Tamarind Paste", "PACK 200g"], "FG12016": ["รากผักชี Coriander Root", "PACK 50g"], "FG12017": ["หอมแดงไทย Shallot", "PACK 250g"], "FG12019": ["ขมิ้นเหลือง Turmeric", "PACK 200g"], "FG12021": ["หอมแดงไทยปอกเปลือก Shallot Peeled", "PACK 100g"], "FG12023": ["ข่าอ่อน Young galangal", "PACK 200g"], "FG14001": ["แตงกวา Small Cucumber", "PACK 300g"], "FG14002": ["แตงร้าน Big Cucumber", "PACK 500g"], "FG14003": ["มะระจีน Chinese Bitter Gourd", "PACK 400g"], "FG14004": ["ฟัก Gourd", "PACK 900g"], "FG14007": ["บวบอ่อน Young Gourd", "PACK 500g"], "FG14009": ["บวบเหลี่ยม Angled Gourd", "PACK 500g"], "FG15001": ["ถั่วฝักยาว Yard Long Bean", "PACK 200g"], "FG16001": ["มะนาวแป้นเขียว(ขนาด500) Lime Size500", "PACK 4pc"], "FG16002": ["มะนาวไร้เมล็ด Seedless Lime", "PACK 4pc"], "FG16004": ["มะละกอดิบ Papaya Green", "PACK 800g"], "FG16005": ["กระเจี๊ยบเขียว Okra", "PACK 150g"], "FG16006": ["มะเขือยาวเขียว Thai Long Green Aubergine", "PACK 500g"], "FG16007": ["มะเขือเปราะ Eggplant White Thai", "PACK 200g"], "FG16008": ["มะเขือพวง Thai Pea Aubergine", "PACK 200g"], "FG16009": ["มะเขือสีดา Seeda Tomato", "PACK 250g"], "FG16010": ["มะเขือไข่เต่าม่วง Thai Pea Aubergine (Purple)", "PACK 250g"], "FG16011": ["มะเขือไข่เต่าขาว Thai Pea Aubergine (white)", "PACK 250g"], "FG16017": ["พริกขี้หนูเขียวเด็ดก้าน Green Bird's Eye Chilli", "PACK 50g"], "FG16018": ["พริกขี้หนูแดงเด็ดก้าน Red Bird's Eye Chilli", "PACK 50g"], "FG16019": ["พริกขี้หนูสวนเล็ก Small Chilli", "PACK 50g"], "FG16020": ["พริกชี้ฟ้าแดง Chilli Red", "PACK 100g"], "FG16021": ["พริกชี้ฟ้าแดงแห้ง Dried Chili", "PACK 80g"], "FG16022": ["พริกขี้หนูแห้ง Dried Chilli", "PACK 80g"], "FG16023": ["พริกชี้ฟ้า เหลือง Chilli Yellow", "PACK 100g"], "FG16024": ["พริกชี้ฟ้า เขียว Chilli Green", "PACK 100g"], "FG16026": ["พริกไทยอ่อน Green Peppercorn", "PACK 50g"], "FG16027": ["พริกหยวก Chilli Green (Prik Yuak)", "PACK 200g"], "FG16081": ["พริกสกรู Screw Chili", "Pack 200g"], "FG17008": ["ดอกไม้ทานได้คละ Mixed Edible Flowers", "PACK"], "FG18002": ["เผือก Taro", "PACK 1kg"], "FG18003": ["มันเทศม่วง Purple Sweet Potato", "PACK 500g"], "FG18004": ["มันเทศเนื้อส้ม Orange Flesh Sweet Potato", "PACK 500g"], "FG18006": ["ยอดมะพร้าว Coconut Stalk", "PACK 500g"], "FG19007": ["เบบี้ซอเรลแดง Baby Red Veined Sorrel", "PACK"], "FG20013": ["กัวคาโมเล Guacamole Set", "SET"], "FG20055": ["ชุดผักแกงกะหรี่", "set"], "FG22001": ["ออร์แกนิค กรีนโอ๊ค Green Oak Organic", "PACK 250g"], "FG22002": ["ออร์แกนิค เรดโอ๊ค Red Oak Organic", "PACK 250g"], "FG22003": ["ออร์แกนิค ฟินเลย์ไอเบิร์ก Frillice Icebege Organic", "PACK 250g"], "FG22004": ["ออร์แกนิค เรด คอรอล Red Coral Organic", "PACK 250g"], "FG22005": ["ออร์แกนิค บัตเตอร์เฮด Butterhead Organic", "PACK 250g"], "FG22006": ["ออร์แกนิค กรีนคอส Green Cos Organic", "PACK 250g"], "FG22007": ["ออร์แกนิค เรดปัตตาเวีย Red Batavia Organic", "PACK 200g"], "FG22011": ["ออร์แกนิค เบบี้คอส Baby Cos Organic", "PACK 200g"], "FG22012": ["ออร์แกนิค คะน้าใบหยิก Curly Kale Organic(Kg)", "PACK 200g"], "FG22013": ["ออร์แกนิค ร็อกเก็ตป่า Wild Rocket Organic", "PACK 150g"], "FG22018": ["ออร์แกนิค ผักกวางตุ้ง Kwang Tung Organic", "PACK 200g"], "FG22019": ["ออร์แกนิค คะน้าไทย Kale Thai Organic", "PACK 200g"], "FG22020": ["ออร์แกนิค กวางตุ้งฮ่องเต้ Organic Taiwanese Bok Choy", "PACK 200g"], "FG22021": ["ออร์แกนิค ผักบุ้งจีน Organic Chinese Morning Glory", "PACK 200g"], "FG22024": ["ออร์แกนิค กะหล่ำปลี Cabbage Organic(Kg)", "PACK 500g"], "FG22031": ["ออร์แกนิค มะเขือเทศเชอรี่ Cherry Tomato Organic", "PACK 250g"], "FG22033": ["ออร์แกนิค ผักกาดขาวปลี Organic Michilli Cabbage", "PACK 500g"], "FG22034": ["ออร์แกนิค ข้าวโพดหวาน Organic Sweet Corn", "PACK 500g"], "FG22035": ["ออร์แกนิค เบบี้แครอท Organic Baby Carrot", "PACK 250g"], "FG22039": ["ออร์แกนิค สลัดแก้ว Organic Iceberg (Kg)", "PACK 250g"], "FG22040": ["ออร์แกนิค ปวยเล้ง Organic Spinach(Kg.)", "PACK 200g"], "FG22042": ["ออร์แกนิค วอเตอร์เครส Organic Watercress ( Kg)", "PACK 100g"], "FG22051": ["ออร์แกนิค เบบี้ผักฉ่อย Organic Baby Pok Choy (Kg)", "PACK 200g"], "FG22052": ["ออร์แกนิค จิงจูฉ่าย Organic White Mugwort (Kg)", "PACK 200g"], "FG22053": ["ออร์แกนิค แตงกวา Organic Cucumber (Kg)", "PACK 250g"], "FG22054": ["ออร์แกนิค แตงร้าน Organic Long Cucumber", "PACK 500g"], "FG22055": ["ออร์แกนิค กระเจี๊ยบเขียว Organic Okra ( Kg)", "PACK 200g"], "FG22056": ["ออร์แกนิค ถั่วฝักยาว Organic Yard Long Bean (kg)", "PACK 250g"], "FG22058": ["ออร์แกนิค บวบเหลี่ยม Organic Lium Zuchini (Kg)", "PACK 500g"], "FG22059": ["ออร์แกนิค มะเขือเทศเชอร์รี่สีเหลือง Organic Yellow Cherry Tomato", "PACK 250g"], "FG22060": ["ออร์แกนิค มะเขือเทศท้อ Organic Plum Tomato", "PACK 500g"], "FG22062": ["ออร์แกนิค มะเขือเปราะขาว Organic Cript eggplant(Kg)", "PACK 250g"], "FG22063": ["ออร์แกนิค มะเขือยาวม่วง Organic Purple Eggplant ( Kg)", "PACK 500g"], "FG22064": ["ออร์แกนิค มะเขือยาวเขียว Organic Green Eggplant (Kg)", "PACK 500g"], "FG22066": ["ออร์แกนิค มะระจีน Organic Bitter Ground (Kg.)", "PACK 1kg"], "FG22075": ["ออร์แกนิค มะเขือเทศเชอร์รี่สีแดง Organic Red Cherry Tomato", "PACK 250g"], "FG22078": ["ข้าวไรซ์เบอรี่ออร์แกนิค", "PACK 1kg"], "FG22079": ["ข้าวหอมมะลิแดงออร์แกนิค", "PACK 1kg"], "FG22080": ["ข้าวกล้องปิ่นเกษตรออร์แกนิค", "PACK 1kg"], "FG22081": ["ข้าวไตรทิพย์ออร์แกนิค", "PACK 1kg"], "FG22083": ["ชุดของขวัญ ข้าวกล้องออร์แกนิค", "SET"], "FG22085": ["ออร์แกนิค ผักกาดหอมอิตาลี่ Organic Green Lecttuce Itali (Kg)", "PACK 200g"], "FG22088": ["ออร์แกนิค เบบี้คอสแดง Red Baby Cos Organic", "PACK 200g"], "FG22092": ["ออร์แกนิค เห็ดนางฟ้าภูฐาน Organic Bhutan Oyster Mushroom 100g.", "PACK 100g"], "FG22093": ["ออร์แกนิค เห็ดเข็มทอง Organic Enoki Mushroom 200g.", "PACK"], "FG22094": ["ออร์แกนิค เห็ดโคนญี่ปุ่น Organic Yanagi Mushroom 150g.", "PACK"], "FG22095": ["ออร์แกนิค เห็ดรวม 4 อย่าง Organic 4 Types Mushroom 200g.", "PACK"], "FG22096": ["ออร์แกนิค เห็ดหอม Organic Shitake Mushroom 150g.", "PACK"], "FG22098": ["ออร์แกนิค มิกซ์เบบี้คอส Organic mix Baby Cos", "Pack 250g"], "FG22099": ["โคโค่แบร์ มะพร้าวออร์แกนิค Cocobear organic coconut", "pce"], "FG23001": ["เบอร์เกอร์เนื้อจากพืช Plant-Based Burger Patty (113g)", "PACK"], "FG23002": ["เนื้อบดจากพืช Plant-Based Minced Meat (150g)", "PACK"], "FG23003": ["เนื้อบดจากพืช Plant-Based Minced Meat (1kg)", "PACK"], "FG24001": ["Sausage: Cumberland 500 g (6 pce/pack)", "PACK"], "FG24002": ["Sausage: Chicken & Thyme 500 g (6 pce/pack)", "PACK"], "FG24003": ["Sausage: Maple & Smoked Bacon 500 g (6 pce/pack)", "PACK"], "FG24004": ["Sausage: Beef & Onion 500 g (6 pce/pack)", "PACK"], "FG24005": ["Sausage: Chorizo Fresco 500 g (6 pce/pack)", "PACK"], "FG24006": ["Sausage: Italian Picante 500 g (6 pce/pack)", "PACK"], "FG24007": ["US Smoked Bacon (200 g/pack)", "PACK"], "FG24008": ["Smoked Back Bacon (200 g/pack)", "PACK"], "FG24009": ["Back Bacon (200 g/pack)", "PACK"], "FG24010": ["Pancetta (200g/Pack)", "PACK"], "FG24011": ["Steak n Stout Pie (250 g/pack)", "PACK"], "FG24012": ["Beef, Red Wine & Mushroom Pie (250 g/pack)", "PACK"], "FG24013": ["Chicken, Ham Hock & Leek Pie (250 g/pack)", "PACK"], "FG24014": ["เบอร์เกอร์เนื้อดรายเอจ Dry Aged Angus Beef Burger (4x125g)", "PACK"], "FG24015": ["เบอร์เกอร์หมูฟรีเรนจ์ Free-Range Pork Burger (4x125g)", "PACK"], "FG24016": ["Salmon from Norway (130g)", "PCE"], "FG24017": ["Snow Fish from Chile (200g)", "PCE"], "FG24018": ["Rib Eye from Australia (125g)", "PCE"], "FG24019": ["Tenderloin from Australia (125g)", "PCE"], "FG24020": ["เบอร์เกอร์บัน Burger Bun 100 g (4 pce/pack)", "PACK"], "FG24021": ["ซาวอยยาร์ด Savoyard (500 g/pce)", "PCE"], "FG24022": ["มัลติเกรน Multigrain (400 g/pce)", "PCE"], "FG24023": ["บาแก็ต เทรดดิชั่น Baguette Tradition (350 g/pce)", "PCE"], "FG24024": ["เชียบัตต้า Ciabatta 140 g (4 pce/pack)", "PACK"], "FG24025": ["ดาร์กไรย์ Dark Rye (400 g/pce)", "PCE"], "FG24026": ["ขนมปังเบอเกอร์โฮลวีต Vegan Whole Wheat Bun 30g (1 PCE/PACK)", "PCE"], "FG25001": ["ไข่ไก่ Free Range Egg (10 pce/pack)", "PACK"], "FG25002": ["ไข่เป็ดปลอดสาร Free Range Duck Egg เบอร์ 0 (10 PCE/TRAY)", "PACK"], "FG25004": ["ไข่ไก่สดปลอดสารเคจฟรี ขนาด M Cage Free Egg size M (10 pce/pack)", "PACK"], "FG26001": ["(SP) Black Truffle Oil 250 ml", "BOTTLE"], "FG26002": ["(SP) White Truffle Oil 250ml", "BOTTLE"], "FG26003": ["(SP) Black Truffle Sauce 190 g", "JAR"], "FG26004": ["(SP) Black Truffle Sauce 90 g", "JAR"], "FG26005": ["กระเทียมดำ-หัว Black Garlic-Bulb 200g", "Pack"], "FG26006": ["กระเทียมดำ-โทน Black Garlic-Tone 200g", "Pack"], "FG26025": ["KEWPIE Sesame Soy Sauce Dressing 50g", "ซอง"], "FG26026": ["KEWPIE Roasted Sesame Dressing 50g", "ซอง"], "FG26027": ["KEWPIE Caesar Salad dressing 50 g", "ซอง"], "FG26029": ["พริกไทยตรังดำ GI ขวดฝาบด 40 กรัม", "BOTTLE"], "FG26030": ["พริกไทยแดงตรัง ขวดฝาบด 40 กรัม", "BOTTLE"], "FG26031": ["พริกไทยตรังขาว GI ขวดฝาบด 40 กรัม", "BOTTLE"], "FG26032": ["พริกไทยตรัง 3สี ขวดฝาบด 40 กรัม", "BOTTLE"], "FG26036": ["น้ำสลัดน้ำมันมะกอกผสมเห็ดทรัฟเฟิล", "ซอง"], "FG26037": ["น้ำสลัดน้ำมันมะกอกผสมเครื่องเทศพิซซ่า", "ซอง"], "FG26038": ["น้ำสลัดน้ำมันมะกอกผสมเบอร์รี่", "ซอง"], "FG26039": ["น้ำสลัดน้ำมันมะกอกรสซีซาร์และแบล็คทรัฟเฟิล", "ซอง"], "FG26040": ["น้ำสลัดน้ำมันมะกอกผสมเห็ดทรัฟเฟิล", "BOTTLE"], "FG26041": ["น้ำสลัดน้ำมันมะกอกผสมเครื่องเทศพิซซ่า", "BOTTLE"], "FG26042": ["De La Lita น้ำสลัดซีซาร์ ดิ ปาร์ม่า 30g.", "ซอง"], "FG26043": ["De La Lita น้ำสลัดหอยลายพริกไทยดำ 30g.", "ซอง"], "FG26044": ["De La Lita น้ำสลัดซีฟู้ดแซ่บ 30g.", "ซอง"], "FG30002": ["ไอติมคีโต รสชาไทย (chathai) ขนาด ขนาด 90 g.", "EA"], "FG30003": ["ไอติมคีโต รสช็อคโกแลต - กล้วย (Choco- Banana) ขนาด ขนาด 90 g.", "EA"], "FG30004": ["ไอติมคีโต รสสตรอว์เบอร์รี(strawberry) ขนาด 90 g.", "EA"], "FG30005": ["ไอติมคีโต รสบลูเบอร์รี(blueberry) ขนาด 90 g.", "EA"], "FG30007": ["ไอติมคีโต รสอัลมอลด์ช็อกโก(almondchoco) ขนาด 90 g.", "EA"], "FG30008": ["ไอติมคีโต รสอัลมอลด์วนิลา (almond Vanilla) ขนาด 90 g.", "EA"], "FG30009": ["ไอติมคีโต รสมิกซ์เบอร์รี่ (Mixberry) 90 g.", "EA"], "FG30010": ["ไอติมคีโต รสกาแฟ (Coffee) 90 g.", "EA"], "FG30011": ["ไอติมคีโต รสชาเขียว (Matcha) 90 g.", "EA"], "FG30012": ["ไอติมคีโต รสดาร์กชอคโกแลต (Dark Chocolate) 90 g.", "EA"], "FG30013": ["ไอติมคีโต รสอัลมอลด์สตรอเบอร์รี่ (almond strawberry) 90 g.", "EA"], "FG30014": ["ไอติมคีโต รสอัลมอลด์บลูเบอร์รี่ (almond Blueberry) 90 g.", "EA"], "FG30015": ["ไอติมคีโต รสอัลมอลด์มิกซ์เบอร์รี่ (almond Mixberry) 90 g.", "EA"], "FG30016": ["ไอติมคีโต รส Very Berry ขนาด 90 g.", "EA"], "FG30017": ["ไอติมคีโต รส Mango Passion Fruit ขนาด 90 g.", "EA"], "FG30018": ["Darklord", "EA"], "FG30019": ["Rocher", "EA"], "FG30020": ["Pita & Pita", "EA"], "FG30021": ["White Cloud", "EA"], "FG30022": ["Good old time", "EA"], "FG30023": ["New York Dream", "EA"], "FG30024": ["Summer in sicity", "EA"], "FG30025": ["Banana ola", "EA"], "FG30026": ["Umami matcha", "EA"], "FG30027": ["Rise n'shine", "EA"], "FG30028": ["Cookie'n cream", "EA"], "FG30029": ["Acai pulp sweetened", "EA"], "FG31001": ["ขนมอบกรอบจากดอกกะหล่ำรสแบล็คทรัฟเฟิล", "PCE"], "FG31002": ["ขนมอบกรอบจากดอกกะหล่ำรสพิซซ่า", "PCE"], "FG31003": ["ขนมอบกรอบจากดอกกะหล่ำรสเดนิชแพสดรี", "PCE"], "FG31004": ["De La Lita Almond Chips 25g. : Original", "PCE"], "FG31005": ["De La Lita Almond Chips 25g. : Sea Salt", "PCE"], "FG31006": ["De La Lita Almond Chips 25g. : Grilled Sweet Corn", "PCE"], "FG31007": ["De La Lita Whole Wheat 30 g : Original", "PCE"], "FG31008": ["De La Lita Whole Wheat 30 g : Sour Cream &Onion", "PCE"], "FG31009": ["De La Lita Whole Wheat 30 g : Larb Zaab", "PCE"], "FG31010": ["De La Lita Whole Wheat 30 g : Smoky BBQ", "PCE"], "FG31011": ["De La Lita Party set", "PCE"], "FG31012": ["ชิปโป้ ขนมข้าวผสมบรอกโคลีแท่งอบกรอบ 22 กรัม รสสาหร่าย", "PCE"], "FG31013": ["ชิปโป้ ขนมข้าวผสมฟักทองแท่งอบกรอบ 22 กรัม รสออริจินัล", "PCE"], "FG31014": ["ชิปโป้ ขนมข้าวผสมฟักทองแท่งอบกรอบ 22 กรัม รสทรัฟเฟิลชีส", "PCE"], "FG32001": ["เฮอริเทจ ถั่วลูกไก่ดิบ 500 กรัม Raw Chickpeas", "PCE"], "FG32005": ["เฮอริเทจ เม็ดมะม่วงหิมพานต์ดิบเต็มเมล็ด 500 กรัม Raw Cashew", "PCE"], "FG32007": ["เฮอริเทจ ลูกเกดดำ 500 กรัม Black Raisins", "PCE"], "FG32009": ["เฮอริเทจ เมล็ดทานตะวันอบกะเทาะเปลือก 500 กรัม Dry Roasted Sunflower Seeds", "PCE"], "FG32011": ["เฮอริเทจ ลูกเกดเขียว 454 กรัม Green Raisins", "PCE"], "FG32012": ["เฮอริเทจ แมคคาดาเมีย เบอร์ 2 (เมล็ดเต็มผสมหักท่อน) 500 กรัม Macadamia No#2", "PCE"], "FG32015": ["เฮอริเทจ วอลนัทอบ 300 กรัม Roasted Walnuts", "PCE"], "FG32016": ["เฮอริเทจ พิสทาชิโอแบบมีเปลือกอบ 350 กรัม Roasted Pistachios", "PCE"], "FG32017": ["เฮอริเทจ พีแคนอบ 300 กรัม Roasted Pecans", "PCE"], "FG32018": ["เฮอริเทจ อัลมอนด์แบบลอกเปลือกชนิดแผ่นบางอบ 300 กรัม Roasted Sliced Almonds", "PCE"], "FG32019": ["เฮอริเทจ อัลมอนด์อบ 400 กรัม Roasted Almonds", "PCE"], "FG32020": ["เฮอริเทจ เมล็ดมะม่วงหิมพานต์อบ 400 กรัม Roasted Cashew Nuts", "PCE"], "FG32021": ["เฮอริเทจ แมคคาดาเมียอบ 350 กรัม Roasted Macadamia Nuts", "PCE"], "FG32022": ["เฮอริเทจ เมล็ดมะม่วงหิมพานต์ชนิดซีกอบ 450 กรัม Roasted Cashew Nut Halves", "PCE"], "PK01022": ["ถุง BOPP NAF30 20.4x30.5+5 PU04-Print 4 Color ขนาด 8x12 นิ้ว Delish Foods", "ชิ้น"], "PK01023": ["ถุง BOPP NAF30 25.0x38.0+5 PU04-Print 4 Color ขนาด 10x15 นิ้ว Delish Foods", "ชิ้น"], "PK01024": ["ถุง BOPP NAF30 30.10x45.70+5 PU04-Print 4 Color ขนาด 12x18 นิ้ว Delish Foods", "ชิ้น"], "PK01025": ["ถุง BOPP NAF30 20.4x66.0+5 PU04-Print 4 Color ขนาด 8x26 นิ้ว Delish Foods", "ชิ้ิ้น"], "PK06007": ["ถุงพลาสติก PETขาวนม หูหิ้ว 3 หู ขนาด 15x22x0.08 พิมพ์ 1 สีดำ", "PACK"], "PK06008": ["ถุงพลาสติก PETขาวนม หูหิ้ว 2 หู ขนาด 9x18x0.08 พิมพ์ 1 สีดำ", "PACK"], "FG07041": ["ฟักทองลักกี้ Lucky Pumpkin", "Pack 1.2kg"], "FG09071": ["มะเขือเทศฟักทองเพทาย Phetai Ribbed Tomat", "Pack 250g"], "FG34001": ["ลูซีน แพลนต์เบสโปรตีน 1000 กรัม Plant-Based Protein 1000g.", "pce"], "FG26046": ["De La Lita อโรมาติกเจแปนนิส 30g.", "ซอง"], "FG26047": ["De La Lita เอ็กซ์ตร้า เวอร์จิ้น บัลซามิก 30g.", "ซอง"]}
+</script>
+<script>
+/* ===== อ่านไฟล์ Excel .xls (BIFF8) แบบไม่ใช้ไลบรารี: คืน { sheets: [{ name, rows: [[...]] }] } ===== */
+function readXls(buf) {
+  const u8 = buf instanceof Uint8Array ? buf : new Uint8Array(buf)
+  const dv = new DataView(u8.buffer, u8.byteOffset, u8.byteLength)
+  // ---------- Compound File (CFB) ----------
+  const sig = [0xd0, 0xcf, 0x11, 0xe0, 0xa1, 0xb1, 0x1a, 0xe1]
+  for (let i = 0; i < 8; i++) if (u8[i] !== sig[i]) throw new Error('ไม่ใช่ไฟล์ .xls (Excel 97-2003)')
+  const ssz = 1 << dv.getUint16(0x1e, true), msz = 1 << dv.getUint16(0x20, true)
+  const nFat = dv.getUint32(0x2c, true), dirStart = dv.getUint32(0x30, true), miniCut = dv.getUint32(0x38, true)
+  const miniFatStart = dv.getUint32(0x3c, true), difStart = dv.getUint32(0x44, true)
+  const off = (s) => 512 + s * ssz
+  const difat = []
+  for (let i = 0; i < 109; i++) difat.push(dv.getUint32(0x4c + i * 4, true))
+  let d = difStart, guard = 0
+  while (d < 0xfffffffa && guard++ < 10000) {
+    for (let i = 0; i < ssz / 4 - 1; i++) difat.push(dv.getUint32(off(d) + i * 4, true))
+    d = dv.getUint32(off(d) + ssz - 4, true)
+  }
+  const fat = []
+  for (let i = 0; i < nFat; i++) { const s = difat[i]; for (let j = 0; j < ssz / 4; j++) fat.push(dv.getUint32(off(s) + j * 4, true)) }
+  const chain = (start, table) => { const out = []; let s = start, g = 0; while (s < 0xfffffffa && g++ < 1e7) { out.push(s); s = table[s] } return out }
+  const readChain = (start, size) => {
+    const secs = chain(start, fat), out = new Uint8Array(secs.length * ssz)
+    secs.forEach((s, i) => out.set(u8.subarray(off(s), off(s) + ssz), i * ssz))
+    return size == null ? out : out.subarray(0, size)
+  }
+  const dir = readChain(dirStart)
+  const ddv = new DataView(dir.buffer, dir.byteOffset, dir.byteLength)
+  const ents = []
+  for (let p = 0; p + 128 <= dir.length; p += 128) {
+    const nl = ddv.getUint16(p + 64, true)
+    let name = ''
+    for (let i = 0; i < Math.max(0, nl / 2 - 1); i++) name += String.fromCharCode(ddv.getUint16(p + i * 2, true))
+    ents.push({ name: name, type: dir[p + 66], start: ddv.getUint32(p + 116, true), size: ddv.getUint32(p + 120, true) })
+  }
+  const root = ents[0]
+  const wbE = ents.find((e) => e.type === 2 && /^(Workbook|Book)$/i.test(e.name))
+  if (!wbE) throw new Error('ไม่พบข้อมูล Workbook ในไฟล์')
+  let wb
+  if (wbE.size < miniCut) {
+    const miniFat = []
+    chain(miniFatStart, fat).forEach((s) => { for (let j = 0; j < ssz / 4; j++) miniFat.push(dv.getUint32(off(s) + j * 4, true)) })
+    const ministream = readChain(root.start)
+    const secs = chain(wbE.start, miniFat)
+    wb = new Uint8Array(secs.length * msz)
+    secs.forEach((s, i) => wb.set(ministream.subarray(s * msz, s * msz + msz), i * msz))
+    wb = wb.subarray(0, wbE.size)
+  } else wb = readChain(wbE.start, wbE.size)
+  const w = new DataView(wb.buffer, wb.byteOffset, wb.byteLength)
+  // ---------- BIFF8 ----------
+  const u16 = new TextDecoder('utf-16le'), l1 = new TextDecoder('windows-1252')
+  const recs = []
+  for (let p = 0; p + 4 <= wb.length;) {
+    const t = w.getUint16(p, true), n = w.getUint16(p + 2, true)
+    recs.push({ t: t, p: p + 4, n: n })
+    p += 4 + n
+  }
+  // อ่านสตริงที่อาจข้ามไปหลาย record (SST + CONTINUE)
+  function segReader(segs) {
+    let si = 0, pos = segs[0].p
+    const end = () => segs[si].p + segs[si].n
+    const adv = () => { if (pos >= end() && si < segs.length - 1) { si++; pos = segs[si].p } }
+    return {
+      u8: () => { adv(); return wb[pos++] },
+      u16: () => { adv(); if (pos + 2 > end()) { const a = wb[pos++]; adv(); return a | (wb[pos++] << 8) } const v = w.getUint16(pos, true); pos += 2; return v },
+      u32: () => { const a = this_u16(); const b = this_u16(); return a | (b << 16) },
+      skip: (n) => { while (n > 0) { adv(); const k = Math.min(n, end() - pos); pos += k; n -= k } },
+      chars: (cch, high) => {
+        let s = ''
+        while (cch > 0) {
+          if (pos >= end()) { si++; pos = segs[si].p; high = wb[pos++] & 1 } // CONTINUE เริ่มด้วย flags ใหม่
+          const bpc = high ? 2 : 1, can = Math.min(cch, Math.floor((end() - pos) / bpc))
+          s += (high ? u16 : l1).decode(wb.subarray(pos, pos + can * bpc))
+          pos += can * bpc; cch -= can
+        }
+        return s
+      }
+    }
+    function this_u16() { adv(); const v = w.getUint16(pos, true); pos += 2; return v }
+  }
+  function xlString(p, lenBytes) { // XLUnicodeString ในเรคคอร์ดเดียว
+    const cch = lenBytes === 1 ? wb[p] : w.getUint16(p, true), fl = wb[p + lenBytes], q = p + lenBytes + 1
+    return fl & 1 ? u16.decode(wb.subarray(q, q + cch * 2)) : l1.decode(wb.subarray(q, q + cch))
+  }
+  const rk = (v) => {
+    let n
+    if (v & 2) n = v >> 2
+    else { const b = new DataView(new ArrayBuffer(8)); b.setUint32(4, v & 0xfffffffc, true); n = b.getFloat64(0, true) }
+    return v & 1 ? n / 100 : n
+  }
+  const sst = [], sheets = []
+  for (let i = 0; i < recs.length; i++) {
+    const r = recs[i]
+    if (r.t === 0x0085) sheets.push({ pos: w.getUint32(r.p, true), hidden: wb[r.p + 4], kind: wb[r.p + 5], name: xlString(r.p + 6, 1), rows: [] })
+    else if (r.t === 0x00fc) {
+      const segs = [r]
+      for (let j = i + 1; j < recs.length && recs[j].t === 0x003c; j++) segs.push(recs[j])
+      const R = segReader(segs)
+      R.skip(4); const uniq = R.u16() | (R.u16() << 16)
+      for (let k = 0; k < uniq; k++) {
+        const cch = R.u16(), fl = R.u8()
+        const runs = fl & 8 ? R.u16() : 0
+        const ext = fl & 4 ? (R.u16() | (R.u16() << 16)) : 0
+        sst.push(R.chars(cch, fl & 1))
+        R.skip(runs * 4 + ext)
+      }
+    } else if (r.t === 0x000a) break // EOF ของ globals
+  }
+  const byPos = new Map(recs.map((r, i) => [r.p - 4, i]))
+  sheets.forEach((sh) => {
+    let i = byPos.get(sh.pos)
+    if (i == null) return
+    const rows = sh.rows
+    const put = (row, col, v) => { (rows[row] = rows[row] || [])[col] = v }
+    let pendingFormula = null
+    for (i = i + 1; i < recs.length; i++) {
+      const r = recs[i], p = r.p
+      if (r.t === 0x000a) break
+      if (r.t === 0x00fd) put(w.getUint16(p, true), w.getUint16(p + 2, true), sst[w.getUint32(p + 6, true)])
+      else if (r.t === 0x0203) put(w.getUint16(p, true), w.getUint16(p + 2, true), w.getFloat64(p + 6, true))
+      else if (r.t === 0x027e) put(w.getUint16(p, true), w.getUint16(p + 2, true), rk(w.getInt32(p + 6, true)))
+      else if (r.t === 0x00bd) {
+        const row = w.getUint16(p, true), c0 = w.getUint16(p + 2, true), c1 = w.getUint16(p + r.n - 2, true)
+        for (let c = c0; c <= c1; c++) put(row, c, rk(w.getInt32(p + 4 + (c - c0) * 6 + 2, true)))
+      } else if (r.t === 0x0204) put(w.getUint16(p, true), w.getUint16(p + 2, true), xlString(p + 6, 2))
+      else if (r.t === 0x00d6) put(w.getUint16(p, true), w.getUint16(p + 2, true), xlString(p + 6, 2)) // RSTRING
+      else if (r.t === 0x0006) {
+        const row = w.getUint16(p, true), col = w.getUint16(p + 2, true)
+        if (w.getUint16(p + 12, true) === 0xffff) {
+          const k = wb[p + 6]
+          if (k === 0) pendingFormula = [row, col]
+          else if (k === 1) put(row, col, !!wb[p + 8])
+          else put(row, col, '')
+        } else put(row, col, w.getFloat64(p + 6, true))
+      } else if (r.t === 0x0207 && pendingFormula) { put(pendingFormula[0], pendingFormula[1], xlString(p, 2)); pendingFormula = null }
+    }
+    for (let k = 0; k < rows.length; k++) rows[k] = Array.from(rows[k] || [], (x) => (x == null ? '' : x))
+  })
+  return { sheets: sheets.filter((s) => s.kind === 0).map((s) => ({ name: s.name, hidden: !!s.hidden, rows: s.rows })) }
+}
+if (typeof module !== 'undefined') module.exports = { readXls }
+
+</script>
+<script>
+;(function () {
+  'use strict'
+  const CFG = { SYNC_URL: 'https://script.google.com/macros/s/AKfycbwh61f39okKUMOiZYpbgBb0iKws6CJUnzuM2usHoIGxUGbNml35yA5iZj16ssUZ2WP_/exec', WHSE: 'WH05', BRANCH: 'พระราม 4', KEEP_DAYS: 14 }
+  const $ = (s, r) => (r || document).querySelector(s)
+  const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
+  const fmtNum = (n) => { n = Math.round(Number(n || 0) * 1000) / 1000; return n.toLocaleString('en-US', { maximumFractionDigits: 3 }) }
+  const baht = (n) => Number(n || 0).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })
+  const lsGet = (k, d) => { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v) } catch (e) { return d } }
+  const lsSet = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); return true } catch (e) { return false } }
+  const K = { days: 'kr4_days', sel: 'kr4_sel' }
+  function toast(msg, type, ms) {
+    const t = document.createElement('div'); t.className = 'toast' + (type === 'err' ? ' err' : ''); t.textContent = msg
+    document.body.appendChild(t); setTimeout(() => t.remove(), ms || 2600)
+  }
+
+  /* ---------- ฐานสินค้า: ชุดเดียวกับทุกแอป (ฝังไว้ + ล่าสุดจากชีต + ที่เพิ่มในเครื่อง) ---------- */
+  let products = {}
+  function rebuildProducts() {
+    const srv = lsGet('rc_products_srv', null)
+    const extra = lsGet('rc_products_extra', {}) || {}
+    products = Object.assign({}, srv && srv.map && Object.keys(srv.map).length ? srv.map : window.PRODUCT_DB || {}, extra)
+  }
+  rebuildProducts()
+  async function refreshProducts() {
+    if (!CFG.SYNC_URL) return
+    try {
+      const srv = lsGet('rc_products_srv', null) || {}
+      const res = await fetch(CFG.SYNC_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'getProducts', ver: srv.ver || '' }) })
+      const j = await res.json()
+      const d = j && (j.data || j)
+      if (d && d.products && typeof d.products === 'object') { lsSet('rc_products_srv', { ver: String(d.prodVer || ''), map: d.products }); rebuildProducts(); render() }
+    } catch (e) { /* ออฟไลน์ก็ใช้ฐานที่ฝังไว้ */ }
+  }
+
+  /* ---------- อ่านไฟล์ ---------- */
+  const cleanName = (s) => String(s || '').replace(/ /g, ' ').replace(/-ธรรมดา\s*$/, '').replace(/^[A-Z]{2}\d{5}\s+/, '').replace(/\s+/g, ' ').trim()
+  function guessPack(name) {
+    const m = /\(\s*([\d.]+)\s*(g|kg|pc|pcs|pce|ml|l)\b[^)]*\)/i.exec(name || '') || /(?:^|\s)([\d.]+)\s*(g|kg|pc|pcs|ml)\.?\s*$/i.exec(name || '')
+    return m ? 'PACK ' + m[1] + m[2].toLowerCase().replace('pcs', 'pc').replace('pce', 'pc') : ''
+  }
+  function delivery(v) {
+    const s = String(v || '').trim()
+    if (/grab/i.test(s)) return 'grab'
+    if (/messenger|line\s*man|lineman/i.test(s)) return 'lm'
+    return s ? 'oth' : 'oth'
+  }
+  const DV = { grab: 'Grab', lm: 'LINE MAN', oth: 'อื่น ๆ' }
+  function toNum(v) { const n = Number(String(v == null ? '' : v).replace(/,/g, '')); return isFinite(n) ? n : 0 }
+  function parseDay(s) {
+    const m = /(\d{1,2})\/(\d{1,2})\/(\d{4})(?:\s+(\d{1,2}):(\d{2}))?/.exec(String(s || ''))
+    if (!m) return null
+    let y = +m[3]; if (y > 2400) y -= 543
+    return { date: y + '-' + String(m[2]).padStart(2, '0') + '-' + String(m[1]).padStart(2, '0'), time: m[4] ? String(m[4]).padStart(2, '0') + ':' + m[5] : '' }
+  }
+  // แปลงตาราง (แถว x คอลัมน์) → ออเดอร์ · แถวที่เลขออเดอร์ว่าง = รายการของออเดอร์ล่าสุดด้านบน
+  function rowsToDay(rows, src) {
+    let hi = -1, H = null
+    for (let i = 0; i < Math.min(rows.length, 30); i++) {
+      const r = rows[i].map((c) => String(c == null ? '' : c).trim())
+      if (r.some((c) => /หมายเลขใบสั่งซื้อ|เลขที่ใบสั่งซื้อ/.test(c)) && r.some((c) => /^SKU$/i.test(c) || /ชื่อสินค้า/.test(c))) { hi = i; H = r; break }
+    }
+    if (hi < 0) return null
+    const col = (re) => H.findIndex((c) => re.test(c))
+    const C = { no: col(/หมายเลขใบสั่งซื้อ|เลขที่ใบสั่งซื้อ/), time: col(/วันที่/), cust: col(/ชื่อลูกค้า/), by: col(/จัดส่งโดย/), name: col(/ชื่อสินค้า/), sku: col(/^SKU$/i), qty: col(/^จำนวน$/), price: col(/ราคาต่อหน่วย/), total: col(/ราคารวม/) }
+    if (C.by < 0 || C.sku < 0 || C.qty < 0) return null
+    const orders = []
+    let cur = null, orphan = 0
+    for (let i = hi + 1; i < rows.length; i++) {
+      const r = rows[i]
+      const g = (k) => (C[k] >= 0 ? r[C[k]] : '')
+      const no = String(g('no') || '').trim(), sku = String(g('sku') || '').trim().toUpperCase(), nm = cleanName(g('name'))
+      if (no) {
+        const t = parseDay(g('time')) || {}
+        cur = { no: no, cust: String(g('cust') || '').trim(), byRaw: String(g('by') || '').trim(), by: delivery(g('by')), date: t.date || '', time: t.time || '', items: [] }
+        orders.push(cur)
+      }
+      if (!sku && !nm) continue
+      if (!cur) { orphan++; continue }
+      cur.items.push({ sku: sku, name: nm, qty: toNum(g('qty')), price: toNum(g('price')), total: toNum(g('total')) })
+    }
+    const days = orders.map((o) => o.date).filter(Boolean).sort()
+    return { date: days.length ? days[days.length - 1] : '', orders: orders.filter((o) => o.items.length), src: src, orphan: orphan, at: Date.now() }
+  }
+  function parseTSV(text) {
+    const tab = text.indexOf('\t') >= 0
+    const rows = []
+    let row = [], cell = '', q = false
+    for (let i = 0; i < text.length; i++) {
+      const c = text[i]
+      if (q) { if (c === '"') { if (text[i + 1] === '"') { cell += '"'; i++ } else q = false } else cell += c; continue }
+      if (c === '"' && cell === '') { q = true; continue }
+      if (c === '\t' || (c === ',' && !tab)) { row.push(cell); cell = '' }
+      else if (c === '\n' || c === '\r') { if (c === '\r' && text[i + 1] === '\n') i++; row.push(cell); rows.push(row); row = []; cell = '' }
+      else cell += c
+    }
+    if (cell !== '' || row.length) { row.push(cell); rows.push(row) }
+    return rows
+  }
+  async function inflateRaw(bytes) {
+    const ds = new DecompressionStream('deflate-raw'); const w = ds.writable.getWriter(); w.write(bytes); w.close()
+    return new Uint8Array(await new Response(ds.readable).arrayBuffer())
+  }
+  async function readXlsxSheets(buf) {
+    if (typeof DecompressionStream === 'undefined') throw new Error('เบราว์เซอร์นี้อ่าน .xlsx ไม่ได้ — ใช้ Chrome รุ่นใหม่ หรือคัดลอกตารางมาวาง')
+    const u8 = new Uint8Array(buf), dv = new DataView(buf)
+    let e = u8.length - 22
+    while (e >= 0 && dv.getUint32(e, true) !== 0x06054b50) e--
+    if (e < 0) throw new Error('ไฟล์ .xlsx ไม่ถูกต้อง')
+    const n = dv.getUint16(e + 10, true); let p = dv.getUint32(e + 16, true)
+    const files = {}, dec = new TextDecoder('utf-8')
+    for (let i = 0; i < n; i++) {
+      const method = dv.getUint16(p + 10, true), csz = dv.getUint32(p + 20, true), nl = dv.getUint16(p + 28, true), el = dv.getUint16(p + 30, true), cl = dv.getUint16(p + 32, true), lo = dv.getUint32(p + 42, true)
+      files[dec.decode(u8.subarray(p + 46, p + 46 + nl))] = { method: method, csz: csz, lo: lo }
+      p += 46 + nl + el + cl
+    }
+    const get = async (name) => { const f = files[name]; if (!f) return null; const ds = f.lo + 30 + dv.getUint16(f.lo + 26, true) + dv.getUint16(f.lo + 28, true); const raw = u8.subarray(ds, ds + f.csz); return dec.decode(f.method === 0 ? raw : await inflateRaw(raw)) }
+    const xml = (t) => new DOMParser().parseFromString(t, 'application/xml')
+    const ssx = await get('xl/sharedStrings.xml')
+    const shared = ssx ? Array.from(xml(ssx).getElementsByTagName('si')).map((si) => Array.from(si.getElementsByTagName('t')).map((t) => t.textContent).join('')) : []
+    const wbx = xml(await get('xl/workbook.xml')), relx = xml(await get('xl/_rels/workbook.xml.rels'))
+    const rels = {}
+    Array.from(relx.getElementsByTagName('Relationship')).forEach((r) => { const t = r.getAttribute('Target'); rels[r.getAttribute('Id')] = t.charAt(0) === '/' ? t.slice(1) : 'xl/' + t })
+    const out = []
+    for (const sh of Array.from(wbx.getElementsByTagName('sheet'))) {
+      const rid = sh.getAttribute('r:id') || sh.getAttributeNS('http://schemas.openxmlformats.org/officeDocument/2006/relationships', 'id')
+      const sx = await get(rels[rid]); if (!sx) continue
+      const rows = []
+      Array.from(xml(sx).getElementsByTagName('row')).forEach((r) => {
+        const ri = Number(r.getAttribute('r') || rows.length + 1) - 1, arr = []
+        Array.from(r.getElementsByTagName('c')).forEach((c) => {
+          const L = (c.getAttribute('r') || '').replace(/[0-9]/g, ''); let ci = 0
+          for (let k = 0; k < L.length; k++) ci = ci * 26 + (L.charCodeAt(k) - 64)
+          const t = c.getAttribute('t'); let v = ''
+          if (t === 'inlineStr') v = Array.from(c.getElementsByTagName('t')).map((x) => x.textContent).join('')
+          else { const ve = c.getElementsByTagName('v')[0]; const raw = ve ? ve.textContent : ''; v = t === 's' ? shared[Number(raw)] || '' : raw }
+          arr[ci - 1] = v
+        })
+        rows[ri] = Array.from(arr, (x) => (x == null ? '' : x))
+      })
+      out.push({ name: sh.getAttribute('name'), rows: Array.from(rows, (r) => r || []) })
+    }
+    return out
+  }
+  async function readAny(file) {
+    const buf = await file.arrayBuffer(), h = new Uint8Array(buf.slice(0, 8))
+    let sheets
+    if (h[0] === 0xd0 && h[1] === 0xcf) sheets = readXls(buf).sheets
+    else if (h[0] === 0x50 && h[1] === 0x4b) sheets = await readXlsxSheets(buf)
+    else {
+      let text
+      try { text = new TextDecoder('utf-8', { fatal: true }).decode(buf) } catch (e) { text = new TextDecoder('windows-874').decode(buf) }
+      sheets = [{ name: file.name, rows: parseTSV(text.replace(/^﻿/, '')) }]
+    }
+    // ใช้แท็บ order ก่อน ถ้าไม่มีใช้แท็บแรกที่มีหัวคอลัมน์ครบ
+    const ordered = sheets.slice().sort((a, b) => (/^order$/i.test(b.name) ? 1 : 0) - (/^order$/i.test(a.name) ? 1 : 0))
+    for (const s of ordered) { const d = rowsToDay(s.rows, file.name + ' · แท็บ ' + s.name); if (d && d.orders.length) return d }
+    throw new Error('ไม่พบตารางออเดอร์ (ต้องมีคอลัมน์ หมายเลขใบสั่งซื้อ · จัดส่งโดย · SKU · จำนวน)')
+  }
+
+  /* ---------- เก็บข้อมูลรายวันในเครื่อง (ไม่ซิงค์ชีต) ---------- */
+  let DAYS = lsGet(K.days, {}) || {}
+  let sel = lsGet(K.sel, '') || ''
+  function pruneDays() {
+    const keys = Object.keys(DAYS).sort()
+    while (keys.length > CFG.KEEP_DAYS) delete DAYS[keys.shift()]
+  }
+  function saveDay(d) {
+    const key = d.date || new Date().toISOString().slice(0, 10)
+    DAYS[key] = d; pruneDays()
+    if (!lsSet(K.days, DAYS)) { const ks = Object.keys(DAYS).sort(); while (ks.length > 1 && !lsSet(K.days, DAYS)) delete DAYS[ks.shift()] }
+    sel = key; lsSet(K.sel, sel)
+  }
+  const cur = () => DAYS[sel] || null
+  const dTH = (k) => { const p = String(k || '').split('-'); return p.length === 3 ? Number(p[2]) + '/' + Number(p[1]) + '/' + p[0] : k }
+
+  /* ---------- คำนวณ ---------- */
+  function info(sku, fileName) {
+    const p = products[sku]
+    if (p) return { name: p[0], pack: p[1] || guessPack(fileName), known: true, packGuess: !p[1] }
+    return { name: fileName, pack: guessPack(fileName), known: false, packGuess: true }
+  }
+  function stats(d, by) {
+    const os = d.orders.filter((o) => !by || by === 'all' || o.by === by)
+    return { orders: os.length, items: os.reduce((a, o) => a + o.items.reduce((x, i) => x + i.qty, 0), 0), lines: os.reduce((a, o) => a + o.items.length, 0), baht: os.reduce((a, o) => a + o.items.reduce((x, i) => x + i.total, 0), 0) }
+  }
+  function totals(d, by) {
+    const g = new Map()
+    d.orders.filter((o) => by === 'all' || o.by === by).forEach((o) => o.items.forEach((it) => {
+      const x = g.get(it.sku) || Object.assign({ sku: it.sku, qty: 0, orders: new Set(), baht: 0 }, info(it.sku, it.name))
+      x.qty = Math.round((x.qty + it.qty) * 1000) / 1000; x.orders.add(o.no); x.baht += it.total
+      g.set(it.sku, x)
+    }))
+    return Array.from(g.values()).sort((a, b) => (a.sku < b.sku ? -1 : 1))
+  }
+  function sapText(d, by, head) {
+    const rows = totals(d, by)
+    const lines = rows.map((x) => [x.sku, CFG.WHSE, String(x.qty), x.pack].join('\t'))
+    if (head) lines.unshift(['Item No.', 'Whse', 'Quantity', 'UoM Code'].join('\t'))
+    return { text: lines.join('\n'), rows: rows }
+  }
+
+  /* ---------- หน้าจอ ---------- */
+  let view = lsGet('kr4_view', 'import'), fBy = 'all', sBy = 'grab', q = ''
+  function setView(v) { view = v; lsSet('kr4_view', v); render() }
+  function render() {
+    const d = cur()
+    document.querySelectorAll('.tab').forEach((t) => t.classList.toggle('on', t.dataset.v === view))
+    const day = $('#tb-day'); day.hidden = !d; if (d) day.textContent = '📅 ' + dTH(d.date)
+    if (!d && view !== 'import') view = 'import'
+    if (view === 'import') viewImport(d)
+    else if (view === 'orders') viewOrders(d)
+    else viewSum(d)
+    dock(d)
+  }
+  function kpis(d) {
+    const a = stats(d, 'all'), g = stats(d, 'grab'), l = stats(d, 'lm'), o = stats(d, 'oth')
+    return '<div class="kpis">' +
+      '<div class="kpi all"><small>ทั้งหมด · ' + esc(dTH(d.date)) + '</small><b>' + a.orders + ' ออเดอร์</b><span>' + fmtNum(a.items) + ' ชิ้น · ฿' + baht(a.baht) + '</span></div>' +
+      '<div class="kpi grab"><small>Grab</small><b>' + g.orders + '</b><span>' + fmtNum(g.items) + ' ชิ้น · ฿' + baht(g.baht) + '</span></div>' +
+      '<div class="kpi lm"><small>LINE MAN</small><b>' + l.orders + '</b><span>' + fmtNum(l.items) + ' ชิ้น · ฿' + baht(l.baht) + '</span></div>' +
+      '</div>' + (o.orders ? '<div class="warn">มี ' + o.orders + ' ออเดอร์ที่ช่องทางจัดส่งไม่ใช่ Grab / LINE MAN — ดูในแท็บออเดอร์ (อื่น ๆ)</div>' : '')
+  }
+  function unknownWarn(d) {
+    const miss = new Map()
+    d.orders.forEach((o) => o.items.forEach((i) => { if (!products[i.sku]) miss.set(i.sku, i.name) }))
+    if (!miss.size) return ''
+    return '<div class="warn">⚠️ <b>' + miss.size + ' รหัสไม่มีในฐานสินค้า</b> — ใช้ชื่อจากไฟล์ และเดาหน่วยจากชื่อ (ตรวจก่อนวาง SAP): ' + Array.from(miss.entries()).map((x) => '<b>' + esc(x[0]) + '</b> ' + esc(x[1])).join(' · ') +
+      '<div style="margin-top:8px"><button type="button" class="btn sm pri" data-act="addprod">➕ เพิ่มเข้าฐานสินค้า (ใส่หน่วยให้ถูก)</button></div></div>'
+  }
+  function viewImport(d) {
+    const keys = Object.keys(DAYS).sort().reverse()
+    $('#view').innerHTML =
+      '<label class="drop" id="drop"><input type="file" id="file" accept=".xls,.xlsx,.csv,.txt"><div class="ic">📂</div><b>เลือกไฟล์ออเดอร์ประจำวัน</b><span class="note">ไฟล์ .xls / .xlsx จากระบบขาย (แท็บ order) · ลากไฟล์มาวางตรงนี้ก็ได้</span></label>' +
+      '<details class="card" style="margin-top:12px"><summary style="cursor:pointer;font-weight:800;color:var(--g)">หรือคัดลอกตารางจาก Excel มาวาง</summary><p class="note">เลือกตั้งแต่แถวหัวคอลัมน์ (ลำดับ, วันที่…, หมายเลขใบสั่งซื้อ, ชื่อลูกค้า, จัดส่งโดย, ชื่อสินค้า, SKU, จำนวน…) แล้วกด Ctrl+C มาวาง</p><textarea class="paste" id="paste" placeholder="วางข้อมูลที่นี่"></textarea><button type="button" class="btn pri block" id="paste-go" style="margin-top:8px">อ่านข้อมูลที่วาง</button></details>' +
+      (d ? kpis(d) + unknownWarn(d) + '<div class="card"><h2>ไฟล์ที่ใช้อยู่</h2><div class="note">' + esc(d.src) + ' · นำเข้าเมื่อ ' + new Date(d.at).toLocaleString('th-TH') + (d.orphan ? ' · ข้ามแถวที่ไม่มีออเดอร์ ' + d.orphan + ' แถว' : '') + '</div><div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><button type="button" class="btn pri grow" data-go="orders">🧾 ดูออเดอร์แยกการจัดส่ง</button><button type="button" class="btn grow" data-go="sum">📦 รวมยอด / ข้อความ SAP</button></div></div>' : '') +
+      (keys.length ? '<div class="card"><h2>วันที่เคยนำเข้า (เก็บในเครื่อง ' + CFG.KEEP_DAYS + ' วันล่าสุด)</h2><div class="hist">' + keys.map((k) => { const s = stats(DAYS[k], 'all'); return '<button type="button" data-day="' + esc(k) + '"' + (k === sel ? ' class="on"' : '') + '><b>' + esc(dTH(k)) + '</b><small>' + s.orders + ' ออเดอร์ · ' + fmtNum(s.items) + ' ชิ้น</small></button>' }).join('') + '</div></div>' : '')
+    const f = $('#file'), dz = $('#drop')
+    f.onchange = () => { if (f.files[0]) load(f.files[0]); f.value = '' }
+    ;['dragenter', 'dragover'].forEach((ev) => dz.addEventListener(ev, (e) => { e.preventDefault(); dz.classList.add('over') }))
+    ;['dragleave', 'drop'].forEach((ev) => dz.addEventListener(ev, (e) => { e.preventDefault(); dz.classList.remove('over') }))
+    dz.addEventListener('drop', (e) => { const fl = e.dataTransfer && e.dataTransfer.files[0]; if (fl) load(fl) })
+    $('#paste-go').onclick = () => {
+      const t = $('#paste').value
+      const dd = rowsToDay(parseTSV(t), 'ข้อมูลที่วาง')
+      if (!dd || !dd.orders.length) { toast('ไม่พบหัวคอลัมน์ หมายเลขใบสั่งซื้อ / จัดส่งโดย / SKU / จำนวน', 'err', 4000); return }
+      done(dd)
+    }
+  }
+  async function load(file) {
+    try { done(await readAny(file)) } catch (e) { toast('อ่านไฟล์ไม่สำเร็จ: ' + e.message, 'err', 5000) }
+  }
+  function done(d) {
+    saveDay(d)
+    const s = stats(d, 'all')
+    toast('✅ นำเข้า ' + s.orders + ' ออเดอร์ · Grab ' + stats(d, 'grab').orders + ' · LINE MAN ' + stats(d, 'lm').orders, 'ok', 3500)
+    render()
+  }
+  function segHtml(curBy, withAll, d, attr) {
+    const opts = (withAll ? [['all', 'ทั้งหมด']] : []).concat([['grab', 'Grab'], ['lm', 'LINE MAN']]).concat(stats(d, 'oth').orders ? [['oth', 'อื่น ๆ']] : [])
+    return '<div class="seg">' + opts.map((o) => '<button type="button" ' + attr + '="' + o[0] + '"' + (o[0] === curBy ? ' class="on"' : '') + '>' + o[1] + '<span class="c">' + stats(d, o[0]).orders + '</span></button>').join('') + '</div>'
+  }
+  const norm = (s) => String(s || '').toLowerCase().replace(/\s+/g, '')
+  function viewOrders(d) {
+    let os = d.orders.filter((o) => fBy === 'all' || o.by === fBy)
+    if (q.trim()) { const k = norm(q); os = os.filter((o) => norm(o.no + o.cust + o.byRaw + o.items.map((i) => i.sku + i.name + (products[i.sku] ? products[i.sku][0] : '')).join('')).indexOf(k) >= 0) }
+    $('#view').innerHTML = segHtml(fBy, true, d, 'data-fb') +
+      '<input type="search" class="search" id="q" placeholder="🔎 ค้นหา เลขออเดอร์ · ชื่อลูกค้า · สินค้า" value="' + esc(q) + '">' +
+      (os.length ? os.map((o) => {
+        const sum = o.items.reduce((a, i) => a + i.total, 0), pcs = o.items.reduce((a, i) => a + i.qty, 0)
+        return '<div class="od"><div class="od-h"><span class="dv ' + o.by + '">' + esc(o.by === 'oth' ? o.byRaw || 'ไม่ระบุ' : DV[o.by]) + '</span><div class="cu"><b>' + esc(o.cust || '(ไม่มีชื่อลูกค้า)') + '</b><small>' + esc(o.no) + (o.time ? ' · ' + esc(o.time) + ' น.' : '') + '</small></div><div class="tt">฿' + baht(sum) + '<small>' + o.items.length + ' รายการ · ' + fmtNum(pcs) + ' ชิ้น</small></div></div>' +
+          o.items.map((i) => { const f = info(i.sku, i.name); return '<div class="od-i"><div class="nm">' + esc(f.name) + '<small>' + esc(i.sku) + ' · ' + esc(f.pack || '-') + (f.known ? '' : ' <span class="wtag">ไม่มีในฐาน</span>') + '</small></div><div class="q">×' + fmtNum(i.qty) + '</div></div>' }).join('') + '</div>'
+      }).join('') : '<div class="emp">ไม่พบออเดอร์</div>')
+    const qi = $('#q')
+    qi.oninput = () => { q = qi.value; const pos = qi.selectionStart; viewOrders(d); const n = $('#q'); n.focus(); try { n.setSelectionRange(pos, pos) } catch (e) {} }
+  }
+  function sumTable(rows) {
+    const tq = rows.reduce((a, x) => a + x.qty, 0)
+    return '<div class="sum-wrap"><table class="sum"><thead><tr><th>รหัส</th><th>สินค้า</th><th class="n">จำนวน</th><th class="n">ออเดอร์</th></tr></thead><tbody>' +
+      rows.map((x) => '<tr><td class="code">' + esc(x.sku) + '</td><td>' + esc(x.name) + '<small>' + esc(x.pack || '⚠️ ไม่มีหน่วย') + (x.known ? '' : ' <span class="wtag">ไม่มีในฐาน · เดาหน่วย</span>') + '</small></td><td class="n"><span class="qbig">' + fmtNum(x.qty) + '</span></td><td class="n">' + x.orders.size + '</td></tr>').join('') +
+      '</tbody><tfoot><tr><td></td><td>รวม ' + rows.length + ' รหัส</td><td class="n">' + fmtNum(tq) + '</td><td></td></tr></tfoot></table></div>'
+  }
+  function viewSum(d) {
+    const rows = totals(d, sBy)
+    $('#view').innerHTML = segHtml(sBy, true, d, 'data-sb') + unknownWarn(d) +
+      '<div class="sec-h"><h3>' + (sBy === 'all' ? 'รวมทุกช่องทาง' : DV[sBy]) + ' · ' + rows.length + ' รหัส</h3><button type="button" class="btn sm pri" data-act="sap">📋 ข้อความ SAP</button></div>' +
+      (rows.length ? sumTable(rows) : '<div class="emp">ไม่มีรายการ</div>') +
+      '<p class="note">จำนวน = รวมทุกออเดอร์ของวัน · ออเดอร์ = มีสินค้านี้กี่ออเดอร์ · ข้อความ SAP ใช้ Whse ' + CFG.WHSE + ' และหน่วยจากฐานสินค้าเดียวกับทุกแอป</p>'
+  }
+  function dock(d) {
+    const dis = d ? '' : ' disabled'
+    $('#dock').innerHTML =
+      '<button type="button" class="btn grow" data-act="pick">📂 นำเข้า</button>' +
+      '<button type="button" class="btn pri grow" data-act="sap"' + dis + '>📋 SAP</button>' +
+      '<button type="button" class="btn grow" data-act="print"' + dis + '>🖨️ พิมพ์</button>' +
+      '<button type="button" class="btn grow" data-act="xlsx"' + dis + '>📗 Excel</button>'
+  }
+
+  /* ---------- ข้อความ SAP (เลือก Grab / LINE MAN / รวม) ---------- */
+  let modal = null
+  function openModal(html) { closeModal(); modal = document.createElement('div'); modal.className = 'mo'; modal.innerHTML = '<div class="ms">' + html + '</div>'; modal.addEventListener('click', (e) => { if (e.target === modal) closeModal() }); document.body.appendChild(modal); return modal }
+  function closeModal() { if (modal) { modal.remove(); modal = null } }
+  function openSap() {
+    const d = cur(); if (!d) return
+    let by = view === 'sum' ? sBy : 'grab'
+    if (by === 'oth') by = 'all'
+    const sh = openModal('<div class="m-title">📋 ข้อความสำหรับวางลง SAP</div><div id="sap-seg"></div><div class="sap-info" id="sap-info"></div><div class="sap-cols">คอลัมน์ B–E: Item No. → Whse → Quantity → UoM Code (มีแถวหัวคอลัมน์)</div><textarea class="sap-text" id="sap-text" rows="9" readonly spellcheck="false"></textarea><div class="sap-preview" id="sap-prev"></div><div class="m-actions"><button type="button" class="btn" data-x="no">ปิด</button><button type="button" class="btn pri" data-x="copy">📋 คัดลอกข้อความ</button></div>')
+    const draw = () => {
+      $('#sap-seg', sh).innerHTML = segHtml(by, true, d, 'data-mb')
+      const r = sapText(d, by, true), s = stats(d, by)
+      $('#sap-info', sh).innerHTML = '<b>' + (by === 'all' ? 'รวมทุกช่องทาง' : DV[by]) + '</b> · ' + esc(dTH(d.date)) + ' · ' + s.orders + ' ออเดอร์ · <b>' + r.rows.length + '</b> รหัส · Whse <b>' + CFG.WHSE + '</b>'
+      $('#sap-text', sh).value = r.text
+      $('#sap-prev', sh).innerHTML = '<table><thead><tr><th>Item No.</th><th>Whse</th><th class="n">Quantity</th><th>UoM Code</th></tr></thead><tbody>' + r.rows.map((x) => '<tr><td>' + esc(x.sku) + '</td><td>' + CFG.WHSE + '</td><td class="n"><b>' + fmtNum(x.qty) + '</b></td><td>' + esc(x.pack || '⚠️ ไม่มีหน่วย') + (x.known ? '' : ' ⚠️') + '</td></tr>').join('') + '</tbody></table>'
+      sh.querySelectorAll('[data-mb]').forEach((b) => { b.onclick = () => { by = b.dataset.mb; draw() } })
+    }
+    $('[data-x=no]', sh).onclick = closeModal
+    $('[data-x=copy]', sh).onclick = async () => {
+      const ta = $('#sap-text', sh), n = sapText(d, by, false).rows.length
+      let ok = false
+      try { await navigator.clipboard.writeText(ta.value); ok = true } catch (e) { /* วิธีเก่า */ }
+      if (!ok) { try { ta.focus(); ta.select(); ok = document.execCommand('copy') } catch (e) { ok = false } }
+      if (ok) toast('📋 คัดลอก ' + (by === 'all' ? 'รวมทุกช่องทาง' : DV[by]) + ' ' + n + ' รหัสแล้ว — ไปวางใน SAP ได้เลย', 'ok', 3000)
+      else { ta.focus(); ta.select(); toast('คัดลอกอัตโนมัติไม่ได้ — ข้อความถูกเลือกไว้แล้ว กด Ctrl+C', 'err', 4000) }
+    }
+    draw()
+  }
+
+  /* ---------- เพิ่มสินค้าที่ไม่มีในฐาน → ฐานสินค้าเดียวกับทุกแอป (ส่งขึ้นชีตเมื่อเปิดแอปรับเข้า/ตีคืน/สั่งของ) ---------- */
+  function openAddProd() {
+    const d = cur(); if (!d) return
+    const miss = new Map()
+    d.orders.forEach((o) => o.items.forEach((i) => { if (!products[i.sku]) miss.set(i.sku, i.name) }))
+    if (!miss.size) { toast('ทุกรหัสมีในฐานสินค้าแล้ว'); return }
+    const list = Array.from(miss.entries())
+    const sh = openModal('<div class="m-title">➕ เพิ่มสินค้าเข้าฐานสินค้า</div><p class="note" style="margin:0 0 10px">ใส่ชื่อและหน่วย (UoM ใน SAP เช่น PACK 250g) — ใช้ร่วมกับทุกแอป และจะส่งขึ้นแท็บ ฐานสินค้า ในชีตเมื่อเปิดแอปรับเข้า / ตีคืน / สั่งสินค้า</p>' +
+      list.map((x, i) => '<div class="card" style="padding:10px;margin-bottom:8px"><b style="color:var(--g)">' + esc(x[0]) + '</b><input class="search" style="margin:6px 0" data-ap-n="' + i + '" value="' + esc(x[1].replace(/\s*\(?\s*[\d.]+\s*(g|kg|pc|pcs|pce|ml)\b[^)]*\)?\s*$/i, '').trim() || x[1]) + '" placeholder="ชื่อสินค้า"><input class="search" style="margin:0" data-ap-p="' + i + '" value="' + esc(guessPack(x[1])) + '" placeholder="หน่วย เช่น PACK 250g"></div>').join('') +
+      '<div class="m-actions"><button type="button" class="btn" data-x="no">ยกเลิก</button><button type="button" class="btn pri" data-x="ok">บันทึก</button></div>')
+    $('[data-x=no]', sh).onclick = closeModal
+    $('[data-x=ok]', sh).onclick = () => {
+      const extra = lsGet('rc_products_extra', {}) || {}, push = lsGet('rc_products_push', {}) || {}
+      let n = 0, bad = 0
+      list.forEach((x, i) => {
+        const nm = $('[data-ap-n="' + i + '"]', sh).value.trim(), pk = $('[data-ap-p="' + i + '"]', sh).value.trim()
+        if (!nm || !pk) { bad++; return }
+        extra[x[0]] = [nm, pk]; push[x[0]] = [nm, pk]; n++
+      })
+      if (bad) { toast('ใส่ชื่อและหน่วยให้ครบทุกรหัส', 'err'); return }
+      lsSet('rc_products_extra', extra); lsSet('rc_products_push', push)
+      rebuildProducts(); closeModal(); render()
+      toast('➕ เพิ่ม ' + n + ' รหัสเข้าฐานสินค้าแล้ว')
+    }
+  }
+  /* ---------- พิมพ์ ---------- */
+  function openPrint() {
+    const d = cur(); if (!d) return
+    window.PrintKit.open({
+      name: 'พิมพ์คีย์ยอดพระราม 4',
+      options: [['sum', 'สรุปรวมยอดแยก Grab / LINE MAN'], ['orders', 'รายการออเดอร์แยกการจัดส่ง (มีชื่อลูกค้า)']],
+      build: (m) => {
+        const a = stats(d, 'all'), g = stats(d, 'grab'), l = stats(d, 'lm')
+        const doc = {
+          kicker: 'DELIVERY ORDERS · RAMA 4', title: m === 'sum' ? 'สรุปรวมยอดสินค้าขายเดลิเวอรี่' : 'รายการออเดอร์เดลิเวอรี่', sub: 'สาขาพระราม 4 · ' + dTH(d.date),
+          meta: [['วันที่', dTH(d.date)], ['Grab', g.orders + ' ออเดอร์ · ' + fmtNum(g.items) + ' ชิ้น'], ['LINE MAN', l.orders + ' ออเดอร์ · ' + fmtNum(l.items) + ' ชิ้น']],
+          noteBox: 'หมายเหตุ:', sign: ['ผู้คีย์ยอด', 'ผู้ตรวจสอบ', 'ผู้จัดการสาขา'], empty: 'ไม่มีรายการ', footRight: 'แอปคีย์ยอดพระราม 4 · Whse ' + CFG.WHSE
+        }
+        const rows = []
+        const groups = ['grab', 'lm'].concat(stats(d, 'oth').orders ? ['oth'] : [])
+        if (m === 'sum') {
+          doc.cols = [{ h: 'ลำดับ', cls: 'c', w: '7%' }, { h: 'รหัสสินค้า', cls: 'code', w: '13%' }, { h: 'ชื่อสินค้า' }, { h: 'หน่วย (UoM)', w: '15%' }, { h: 'จำนวนรวม', cls: 'n', w: '11%' }, { h: 'ออเดอร์', cls: 'c', w: '9%' }]
+          groups.forEach((by) => {
+            const t = totals(d, by), s = stats(d, by)
+            rows.push({ sec: (by === 'oth' ? 'อื่น ๆ' : DV[by]) + ' · ' + s.orders + ' ออเดอร์ · ' + t.length + ' รหัส · ' + fmtNum(s.items) + ' ชิ้น' })
+            t.forEach((x, i) => rows.push({ cells: [i + 1, x.sku, x.name, x.pack || '-', fmtNum(x.qty), x.orders.size], hl: !x.known }))
+          })
+          doc.foot = ['', '', 'รวมทั้งหมด ' + a.orders + ' ออเดอร์', '', fmtNum(a.items), '']
+        } else {
+          doc.cols = [{ h: 'เลขออเดอร์', w: '15%' }, { h: 'ลูกค้า', w: '13%' }, { h: 'เวลา', cls: 'c', w: '7%' }, { h: 'รหัส', cls: 'code', w: '11%' }, { h: 'สินค้า' }, { h: 'จำนวน', cls: 'n', w: '8%' }, { h: 'ราคารวม', cls: 'n', w: '10%' }]
+          groups.forEach((by) => {
+            const os = d.orders.filter((o) => o.by === by)
+            rows.push({ sec: (by === 'oth' ? 'อื่น ๆ' : DV[by]) + ' · ' + os.length + ' ออเดอร์' })
+            os.forEach((o) => o.items.forEach((i, k) => rows.push({ cells: [k ? '' : o.no, k ? '' : o.cust, k ? '' : o.time, i.sku, info(i.sku, i.name).name, fmtNum(i.qty), baht(i.total)] })))
+          })
+          doc.foot = ['', '', '', '', 'รวม ' + a.orders + ' ออเดอร์', fmtNum(a.items), baht(a.baht)]
+        }
+        doc.rows = rows
+        return doc
+      }
+    })
+  }
+
+  /* ---------- Excel ---------- */
+  function exportXlsx() {
+    const d = cur(); if (!d) return
+    const by = view === 'sum' ? sBy : view === 'orders' ? fBy : 'all'
+    if (view === 'orders') {
+      const os = d.orders.filter((o) => by === 'all' || o.by === by), rows = []
+      os.forEach((o) => o.items.forEach((i) => { const f = info(i.sku, i.name); rows.push([o.no, o.cust, o.by === 'oth' ? o.byRaw : DV[o.by], o.date, o.time, i.sku, f.name, f.pack, i.qty, i.price, i.total]) }))
+      RK.xlsx('ออเดอร์_พระราม4_' + (by === 'all' ? 'ทั้งหมด' : DV[by] || by) + '_' + d.date, ['เลขออเดอร์', 'ชื่อลูกค้า', 'จัดส่งโดย', 'วันที่', 'เวลา', 'รหัสสินค้า', 'ชื่อสินค้า', 'หน่วย', 'จำนวน', 'ราคาต่อหน่วย', 'ราคารวม'], rows, [14, 14, 11, 12, 8, 12, 38, 14, 9, 11, 11], 'ออเดอร์')
+    } else {
+      const b2 = by === 'oth' ? 'all' : by
+      const rows = totals(d, b2).map((x) => [x.sku, CFG.WHSE, x.qty, x.pack, x.name, x.orders.size])
+      RK.xlsx('รวมยอด_พระราม4_' + (b2 === 'all' ? 'ทั้งหมด' : DV[b2]) + '_' + d.date, ['Item No.', 'Whse', 'Quantity', 'UoM Code', 'ชื่อสินค้า', 'จำนวนออเดอร์'], rows, [12, 8, 10, 14, 38, 12], 'รวมยอด')
+    }
+    toast('📗 ส่งออก Excel แล้ว')
+  }
+
+  /* ---------- เหตุการณ์ ---------- */
+  document.addEventListener('click', (e) => {
+    const t = e.target.closest('[data-v],[data-go],[data-day],[data-fb],[data-sb],[data-act]')
+    if (!t || t.disabled) return
+    if (t.dataset.v) setView(t.dataset.v)
+    else if (t.dataset.go) setView(t.dataset.go)
+    else if (t.dataset.day) { sel = t.dataset.day; lsSet(K.sel, sel); render() }
+    else if (t.dataset.fb) { fBy = t.dataset.fb; render() }
+    else if (t.dataset.sb) { sBy = t.dataset.sb; render() }
+    else if (t.dataset.act === 'pick') { if (view !== 'import') setView('import'); setTimeout(() => { const f = $('#file'); if (f) f.click() }, 30) }
+    else if (t.dataset.act === 'sap') openSap()
+    else if (t.dataset.act === 'print') openPrint()
+    else if (t.dataset.act === 'xlsx') exportXlsx()
+    else if (t.dataset.act === 'addprod') openAddProd()
+  })
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal && !document.getElementById('pk-ov')) closeModal() })
+  if (!DAYS[sel]) { const ks = Object.keys(DAYS).sort(); sel = ks.length ? ks[ks.length - 1] : '' }
+  render()
+  refreshProducts()
+  if (window.__KR4_TEST) window.__KR4 = { rowsToDay: rowsToDay, readAny: readAny, totals: totals, sapText: sapText, stats: stats, cur: cur, products: () => products }
+})()
+</script>
+</body>
+</html>
